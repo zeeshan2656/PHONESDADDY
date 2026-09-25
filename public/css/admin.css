@@ -425,6 +425,34 @@ body.admin-body {
   background: #fecaca;
 }
 
+/* Dynamic Affiliate Deals Editor */
+.affiliate-builder-box {
+  background: #f8fafc;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.affiliate-row-item {
+  display: grid;
+  grid-template-columns: 200px 180px 1fr 40px;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .affiliate-row-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    background: #ffffff;
+    padding: 12px;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+  }
+}
+
 /* Pagination */
 .pagination-wrap {
   display: flex;

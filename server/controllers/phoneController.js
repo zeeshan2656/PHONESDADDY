@@ -161,6 +161,18 @@ class PhoneController {
         }
       }
 
+      // Parse affiliate links
+      let parsedAffiliateLinks = [];
+      if (req.body.affiliate_links) {
+        try {
+          parsedAffiliateLinks = typeof req.body.affiliate_links === 'string'
+            ? JSON.parse(req.body.affiliate_links)
+            : req.body.affiliate_links;
+        } catch (_) {
+          parsedAffiliateLinks = [];
+        }
+      }
+
       const phoneData = {
         brand_id: parseInt(brand_id, 10),
         name: name.trim(),
@@ -168,6 +180,8 @@ class PhoneController {
         short_description: short_description || '',
         image: imagePath,
         images: parsedImages || (imagePath !== '/images/placeholder.svg' ? [imagePath] : undefined),
+        affiliate_links: parsedAffiliateLinks,
+        video_url: req.body.video_url ? req.body.video_url.trim() : null,
         release_date: release_date || '',
         status: status || 'Available',
         price: parseFloat(price) || 0,
@@ -246,6 +260,20 @@ class PhoneController {
         } catch (_) {
           phoneData.images = String(req.body.images).split(',').map(s => s.trim()).filter(Boolean);
         }
+      }
+
+      if (req.body.affiliate_links !== undefined) {
+        try {
+          phoneData.affiliate_links = typeof req.body.affiliate_links === 'string'
+            ? JSON.parse(req.body.affiliate_links)
+            : req.body.affiliate_links;
+        } catch (_) {
+          phoneData.affiliate_links = [];
+        }
+      }
+
+      if (req.body.video_url !== undefined) {
+        phoneData.video_url = req.body.video_url ? req.body.video_url.trim() : null;
       }
 
       let parsedSpecs = null;

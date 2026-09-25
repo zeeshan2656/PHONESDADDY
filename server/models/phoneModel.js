@@ -243,6 +243,17 @@ class PhoneModel {
       phone.images = phone.image ? [phone.image] : [];
     }
 
+    // Parse affiliate_links JSON
+    if (phone.affiliate_links) {
+      try {
+        phone.affiliate_links = typeof phone.affiliate_links === 'string' ? JSON.parse(phone.affiliate_links) : phone.affiliate_links;
+      } catch (_) {
+        phone.affiliate_links = [];
+      }
+    } else {
+      phone.affiliate_links = [];
+    }
+
     // 1. Fetch related phones (up to 6 devices from same brand or similar)
     try {
       const [relatedRows] = await pool.query(`
@@ -346,6 +357,17 @@ class PhoneModel {
       phone.images = phone.image ? [phone.image] : [];
     }
 
+    // Parse affiliate_links JSON
+    if (phone.affiliate_links) {
+      try {
+        phone.affiliate_links = typeof phone.affiliate_links === 'string' ? JSON.parse(phone.affiliate_links) : phone.affiliate_links;
+      } catch (_) {
+        phone.affiliate_links = [];
+      }
+    } else {
+      phone.affiliate_links = [];
+    }
+
     return phone;
   }
 
@@ -366,9 +388,9 @@ class PhoneModel {
 
       const [res] = await connection.query(`
         INSERT INTO phones (
-          brand_id, name, slug, short_description, image, images, release_date,
+          brand_id, name, slug, short_description, image, images, affiliate_links, video_url, release_date,
           status, price, featured, popular, views, meta_title, meta_description
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
         phoneData.brand_id,
         phoneData.name,
@@ -376,6 +398,8 @@ class PhoneModel {
         phoneData.short_description || '',
         phoneData.image || '',
         phoneData.images ? JSON.stringify(phoneData.images) : null,
+        phoneData.affiliate_links ? (typeof phoneData.affiliate_links === 'string' ? phoneData.affiliate_links : JSON.stringify(phoneData.affiliate_links)) : null,
+        phoneData.video_url || null,
         phoneData.release_date || '',
         phoneData.status || 'Available',
         phoneData.price || 0,
@@ -449,6 +473,16 @@ class PhoneModel {
         phoneData.meta_title || `${phoneData.name} Price in Pakistan & Specifications | PhonesDaddy`,
         phoneData.meta_description || `${phoneData.name} specifications, price in Pakistan, camera, battery, and details.`
       ];
+
+      if (phoneData.affiliate_links !== undefined) {
+        updateFields.push('affiliate_links = ?');
+        updateValues.push(phoneData.affiliate_links ? (typeof phoneData.affiliate_links === 'string' ? phoneData.affiliate_links : JSON.stringify(phoneData.affiliate_links)) : null);
+      }
+
+      if (phoneData.video_url !== undefined) {
+        updateFields.push('video_url = ?');
+        updateValues.push(phoneData.video_url || null);
+      }
 
       if (phoneData.image) {
         updateFields.push('image = ?');

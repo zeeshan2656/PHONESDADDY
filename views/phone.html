@@ -358,6 +358,46 @@
           </table>
         </div>
 
+        <!-- External Store Deals & Affiliate Purchase Links (Where to Buy) -->
+        <div class="spec-section-card phone-affiliate-section" id="phoneAffiliateSection" style="margin-bottom: 28px; display: none;">
+          <div class="spec-section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span>Where to Buy &amp; Online Deals</span>
+            </span>
+            <span style="font-size: 11px; font-weight: 700; color: #0d9488; background: #f0fdfa; border: 1px solid #99f6e4; padding: 2px 10px; border-radius: 9999px;">
+              External Stores &bull; Affiliate Links
+            </span>
+          </div>
+          <div class="phone-affiliate-body">
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 14px; padding: 0 4px;">
+              Compare live prices and special offers from verified partner retail stores. Prices and stock availability may vary.
+            </p>
+            <div class="phone-affiliate-list" id="phoneAffiliateList">
+              <!-- Dynamically populated via phone-detail.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Review & Unboxing (YouTube Responsive Player) -->
+        <div class="spec-section-card phone-video-section" id="phoneVideoSection" style="margin-bottom: 28px; display: none;">
+          <div class="spec-section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2"/></svg>
+              <span id="phoneVideoReviewTitle">Video Review &amp; Unboxing</span>
+            </span>
+            <span style="background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px;">
+              <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#fff"/></svg>
+              YouTube
+            </span>
+          </div>
+          <div class="phone-video-body">
+            <div class="phone-video-responsive-wrap">
+              <iframe id="phoneDetailVideoIframe" src="" title="Video Review &amp; Unboxing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+
         <!-- User Reviews & Ratings Section -->
         <section class="phone-reviews-section" id="reviewsSection" style="margin-bottom: 40px;">
           <div class="spec-section-card" style="padding: 0; overflow: hidden; background: #fff; border: 1px solid var(--border-color); border-radius: 8px;">

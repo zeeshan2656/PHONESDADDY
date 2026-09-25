@@ -70,6 +70,15 @@ function escapeQuote(str) {
   return str.toString().replace(/'/g, "\\'");
 }
 
+// Helper: Extract YouTube video ID from various URL formats
+function extractYouTubeVideoId(url) {
+  if (!url || typeof url !== 'string') return null;
+  const clean = url.trim();
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = clean.match(regExp);
+  return match ? match[1] : null;
+}
+
 // Helper: Format rich comment/review message with image and link sanitization
 function formatCommentMessage(content) {
   if (!content) return '';
@@ -876,6 +885,96 @@ async function initPhoneForm() {
     });
   }
 
+  // ── YouTube Video Review & Preview Setup ──────────────────────────────────
+  const videoUrlInput = document.getElementById('phoneVideoUrl');
+  const btnClearVideoUrl = document.getElementById('btnClearVideoUrl');
+  const videoPreviewBox = document.getElementById('adminVideoPreviewBox');
+  const videoPreviewIframe = document.getElementById('adminVideoPreviewIframe');
+  const previewVideoIdBadge = document.getElementById('previewVideoIdBadge');
+
+  function updateVideoPreview() {
+    if (!videoUrlInput) return;
+    const url = videoUrlInput.value.trim();
+    if (btnClearVideoUrl) btnClearVideoUrl.style.display = url ? 'inline-flex' : 'none';
+
+    const videoId = extractYouTubeVideoId(url);
+    if (videoId && videoPreviewBox && videoPreviewIframe) {
+      videoPreviewIframe.src = `https://www.youtube.com/embed/${videoId}`;
+      if (previewVideoIdBadge) previewVideoIdBadge.textContent = `ID: ${videoId}`;
+      videoPreviewBox.style.display = 'block';
+    } else {
+      if (videoPreviewIframe) videoPreviewIframe.src = '';
+      if (videoPreviewBox) videoPreviewBox.style.display = 'none';
+    }
+  }
+
+  if (videoUrlInput) {
+    videoUrlInput.addEventListener('input', updateVideoPreview);
+    videoUrlInput.addEventListener('change', updateVideoPreview);
+  }
+  if (btnClearVideoUrl && videoUrlInput) {
+    btnClearVideoUrl.addEventListener('click', () => {
+      videoUrlInput.value = '';
+      updateVideoPreview();
+    });
+  }
+
+  // ── Dynamic External Store Affiliate Deals Builder ─────────────────────────
+  const affiliateContainer = document.getElementById('affiliateRowsContainer');
+  const btnAddAffiliate = document.getElementById('btnAddAffiliateRow');
+
+  function addAffiliateRow(store = '', price = '', url = '') {
+    if (!affiliateContainer) return;
+
+    const row = document.createElement('div');
+    row.className = 'affiliate-row-item';
+
+    row.innerHTML = `
+      <div>
+        <input type="text" class="form-control aff-store-input" placeholder="e.g. Amazon, Daraz" value="${escapeHtml(store)}" list="storePresetsList">
+        <datalist id="storePresetsList">
+          <option value="Amazon">
+          <option value="Daraz">
+          <option value="PriceOye">
+          <option value="AliExpress">
+          <option value="Telemart">
+          <option value="Shophive">
+          <option value="Official Store">
+        </datalist>
+      </div>
+      <div>
+        <input type="text" class="form-control aff-price-input" placeholder="e.g. Rs. 289,999 or $1,199" value="${escapeHtml(price)}">
+      </div>
+      <div>
+        <input type="url" class="form-control aff-url-input" placeholder="https://..." value="${escapeHtml(url)}">
+      </div>
+      <div>
+        <button type="button" class="btn-remove-row btn-remove-aff-row" title="Remove store deal">&times;</button>
+      </div>
+    `;
+
+    row.querySelector('.btn-remove-aff-row').addEventListener('click', () => {
+      row.remove();
+    });
+
+    affiliateContainer.appendChild(row);
+  }
+
+  if (btnAddAffiliate) {
+    btnAddAffiliate.addEventListener('click', () => {
+      addAffiliateRow('', '', '');
+    });
+  }
+
+  // Quick preset buttons (+ Amazon, + Daraz, + PriceOye, + AliExpress)
+  document.querySelectorAll('.quick-add-affiliate').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const store = btn.dataset.store || '';
+      const price = btn.dataset.price || '';
+      addAffiliateRow(store, price, '');
+    });
+  });
+
   // Short Summary / Highlights auto-generation & char counter
   const shortDescField = document.getElementById('phoneShortDesc');
   const summaryCharCount = document.getElementById('summaryCharCount');
@@ -1194,6 +1293,23 @@ async function initPhoneForm() {
       formData.set('images', JSON.stringify(adminGalleryImages));
     }
 
+    // Collect External Store Affiliate Deals
+    const affRows = document.querySelectorAll('.affiliate-row-item');
+    const affArray = [];
+    affRows.forEach(row => {
+      const store = row.querySelector('.aff-store-input')?.value.trim();
+      const price = row.querySelector('.aff-price-input')?.value.trim();
+      const url = row.querySelector('.aff-url-input')?.value.trim();
+      if (store && url) {
+        affArray.push({ store, price: price || '', url });
+      }
+    });
+    formData.set('affiliate_links', JSON.stringify(affArray));
+
+    // Collect Video URL
+    const videoUrl = document.getElementById('phoneVideoUrl')?.value.trim() || '';
+    formData.set('video_url', videoUrl);
+
     try {
       const url = isEdit ? `/api/phones/${phoneId}` : '/api/phones';
       const method = isEdit ? 'PUT' : 'POST';
@@ -1289,6 +1405,24 @@ async function loadPhoneDataForEdit(id) {
         if (pr.country === 'UAE') document.getElementById('priceAED').value = pr.amount;
         if (pr.country === 'India') document.getElementById('priceINR').value = pr.amount;
         if (pr.country === 'UK') document.getElementById('priceGBP').value = pr.amount;
+      }
+    }
+
+    // Populate YouTube Video URL
+    const vInput = document.getElementById('phoneVideoUrl');
+    if (vInput) {
+      vInput.value = p.video_url || '';
+      updateVideoPreview();
+    }
+
+    // Populate External Store Affiliate Deals
+    const affContainer = document.getElementById('affiliateRowsContainer');
+    if (affContainer) {
+      affContainer.innerHTML = '';
+      if (p.affiliate_links && Array.isArray(p.affiliate_links) && p.affiliate_links.length > 0) {
+        for (const item of p.affiliate_links) {
+          addAffiliateRow(item.store, item.price, item.url);
+        }
       }
     }
 

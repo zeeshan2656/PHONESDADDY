@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS `phones` (
   `short_description` TEXT DEFAULT NULL,
   `image` VARCHAR(255) DEFAULT NULL,
   `images` TEXT DEFAULT NULL,
+  `affiliate_links` LONGTEXT DEFAULT NULL,
+  `video_url` VARCHAR(500) DEFAULT NULL,
   `release_date` VARCHAR(50) DEFAULT NULL,
   `status` ENUM('Available', 'Rumored', 'Upcoming', 'Discontinued') DEFAULT 'Available',
   `price` DECIMAL(12,2) DEFAULT 0.00,

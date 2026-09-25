@@ -1929,6 +1929,177 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
+   External Store Deals / Affiliate Links (Where to Buy)
+   ========================================================================== */
+.phone-affiliate-section {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.phone-affiliate-body {
+  padding: 18px 20px;
+}
+
+.phone-affiliate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.affiliate-deal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.affiliate-deal-item:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.deal-store-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 180px;
+}
+
+.deal-store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.deal-store-badge .store-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.deal-tag {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.deal-price-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deal-price-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.deal-price-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.deal-action-col {
+  margin-left: auto;
+}
+
+.deal-buy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.deal-buy-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 640px) {
+  .affiliate-deal-item {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .deal-store-info {
+    min-width: unset;
+    flex: 1;
+  }
+  .deal-price-col {
+    margin-left: auto;
+  }
+  .deal-action-col {
+    width: 100%;
+    margin-left: 0;
+  }
+  .deal-buy-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 9px 16px;
+  }
+}
+
+/* ==========================================================================
+   Video Review & Unboxing (YouTube Responsive Player)
+   ========================================================================== */
+.phone-video-section {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.phone-video-body {
+  padding: 18px 20px;
+  background: #0f172a;
+}
+
+.phone-video-responsive-wrap {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.phone-video-responsive-wrap iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ==========================================================================
    Comparison Page
    ========================================================================== */
 .compare-matrix-wrap {

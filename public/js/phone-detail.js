@@ -121,6 +121,12 @@ function renderPhoneDetail(phone) {
   // Render Multi-Country Price Table
   renderPricesTable(phone.prices, phone.price);
 
+  // Render External Store Deals & Affiliate Purchase Links (Where to Buy)
+  renderAffiliateDeals(phone.affiliate_links, phone.name);
+
+  // Render Video Review & Unboxing (YouTube Responsive Player)
+  renderVideoReview(phone.video_url, phone.name);
+
   // Render Specification Sections
   renderSpecsTable(phone.specs);
 
@@ -477,6 +483,178 @@ function renderPricesTable(prices = [], defaultPrice = 0) {
       <td><span style="color:#64748b;font-weight:600;">${pr.currency}</span></td>
       <td><strong style="color:#0d9488;">${pr.amount}</strong></td>
     </tr>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// External Store Deals & Affiliate Purchase Links (Where to Buy)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getStoreMeta(storeName = '') {
+  const s = (storeName || '').trim().toLowerCase();
+  if (s.includes('amazon')) {
+    return {
+      name: 'Amazon',
+      badgeBg: '#fff7ed',
+      badgeColor: '#c2410c',
+      badgeBorder: '#fed7aa',
+      btnBg: '#ff9900',
+      btnText: '#111827',
+      tag: 'Global Delivery'
+    };
+  }
+  if (s.includes('daraz')) {
+    return {
+      name: 'Daraz',
+      badgeBg: '#fff1f2',
+      badgeColor: '#e11d48',
+      badgeBorder: '#fecdd3',
+      btnBg: '#f85606',
+      btnText: '#ffffff',
+      tag: 'Pakistan Store'
+    };
+  }
+  if (s.includes('priceoye') || s.includes('price oye')) {
+    return {
+      name: 'PriceOye',
+      badgeBg: '#eff6ff',
+      badgeColor: '#1d4ed8',
+      badgeBorder: '#bfdbfe',
+      btnBg: '#0077c5',
+      btnText: '#ffffff',
+      tag: 'Official Warranty'
+    };
+  }
+  if (s.includes('aliexpress') || s.includes('ali express')) {
+    return {
+      name: 'AliExpress',
+      badgeBg: '#fef2f2',
+      badgeColor: '#b91c1c',
+      badgeBorder: '#fecaca',
+      btnBg: '#e62e04',
+      btnText: '#ffffff',
+      tag: 'Global Shipping'
+    };
+  }
+  if (s.includes('telemart')) {
+    return {
+      name: 'Telemart',
+      badgeBg: '#f0f9ff',
+      badgeColor: '#0369a1',
+      badgeBorder: '#bae6fd',
+      btnBg: '#0054a6',
+      btnText: '#ffffff',
+      tag: 'Fast Dispatch'
+    };
+  }
+  if (s.includes('shophive')) {
+    return {
+      name: 'Shophive',
+      badgeBg: '#f0fdf4',
+      badgeColor: '#15803d',
+      badgeBorder: '#bbf7d0',
+      btnBg: '#16a34a',
+      btnText: '#ffffff',
+      tag: 'Original Stock'
+    };
+  }
+  return {
+    name: storeName || 'Online Store',
+    badgeBg: '#f0fdfa',
+    badgeColor: '#0f766e',
+    badgeBorder: '#99f6e4',
+    btnBg: '#0d9488',
+    btnText: '#ffffff',
+    tag: 'Verified Partner'
+  };
+}
+
+function renderAffiliateDeals(links = [], phoneName = '') {
+  const section = document.getElementById('phoneAffiliateSection');
+  const container = document.getElementById('phoneAffiliateList');
+  if (!section || !container) return;
+
+  if (!links || !Array.isArray(links) || links.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  const validLinks = links.filter(l => l && l.store && (l.url || l.link));
+  if (validLinks.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  container.innerHTML = validLinks.map((item, idx) => {
+    const store = item.store || 'Store';
+    const price = item.price && item.price.trim() ? item.price.trim() : 'View Live Price';
+    const targetUrl = item.url || item.link || '#';
+    const meta = getStoreMeta(store);
+
+    return `
+      <div class="affiliate-deal-item" id="dealRow-${idx}">
+        <div class="deal-store-info">
+          <div class="deal-store-badge" style="background:${meta.badgeBg}; color:${meta.badgeColor}; border:1px solid ${meta.badgeBorder};">
+            <span class="store-dot" style="background:${meta.badgeColor};"></span>
+            <strong>${escapeHtml(store)}</strong>
+          </div>
+          <span class="deal-tag">${meta.tag}</span>
+        </div>
+
+        <div class="deal-price-col">
+          <span class="deal-price-label">Store Price:</span>
+          <span class="deal-price-val">${escapeHtml(price)}</span>
+        </div>
+
+        <div class="deal-action-col">
+          <a href="${escapeAttr(targetUrl)}" target="_blank" rel="nofollow sponsored noopener" class="deal-buy-btn" style="background:${meta.btnBg}; color:${meta.btnText};">
+            <span>Buy Now</span>
+            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Video Review & Unboxing (YouTube Responsive Player)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function extractYouTubeId(url) {
+  if (!url || typeof url !== 'string') return null;
+  const clean = url.trim();
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = clean.match(regExp);
+  return match ? match[1] : null;
+}
+
+function renderVideoReview(videoUrl, phoneName = '') {
+  const section = document.getElementById('phoneVideoSection');
+  const iframe = document.getElementById('phoneDetailVideoIframe');
+  const titleEl = document.getElementById('phoneVideoReviewTitle');
+  if (!section || !iframe) return;
+
+  if (!videoUrl || typeof videoUrl !== 'string' || !videoUrl.trim()) {
+    section.style.display = 'none';
+    iframe.src = '';
+    return;
+  }
+
+  const videoId = extractYouTubeId(videoUrl);
+  if (!videoId) {
+    section.style.display = 'none';
+    iframe.src = '';
+    return;
+  }
+
+  if (titleEl && phoneName) {
+    titleEl.textContent = `${phoneName} — Video Review & Unboxing`;
+  }
+  iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`;
+  iframe.title = `${phoneName || 'Phone'} Video Review & Unboxing`;
+  section.style.display = 'block';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
