@@ -661,6 +661,7 @@ function renderVideoReview(videoUrl, phoneName = '') {
   if (titleEl && phoneName) {
     titleEl.textContent = `${phoneName} — Video Review & Unboxing`;
   }
+  iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
   iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`;
   iframe.title = `${phoneName || 'Phone'} Video Review & Unboxing`;
   section.style.display = 'block';

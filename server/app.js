@@ -32,7 +32,10 @@ app.use((req, res, next) => {
 // Security Middlewares
 app.use(helmet({
   contentSecurityPolicy: false, // Allows clean inline scripts and fonts for Vanilla JS components
-  crossOriginEmbedderPolicy: false
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: false,
+  crossOriginOpenerPolicy: false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 }));
 
 app.use(cors());

@@ -1312,6 +1312,7 @@ function updateVideoPreview() {
 
   const videoId = extractYouTubeVideoId(url);
   if (videoId && videoPreviewBox && videoPreviewIframe) {
+    videoPreviewIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     videoPreviewIframe.src = `https://www.youtube.com/embed/${videoId}`;
     if (previewVideoIdBadge) previewVideoIdBadge.textContent = `ID: ${videoId}`;
     videoPreviewBox.style.display = 'block';
