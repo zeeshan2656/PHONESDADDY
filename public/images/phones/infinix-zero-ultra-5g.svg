@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bodyGrad_INFINIX" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#115e59"/>
+    </linearGradient>
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <radialGradient id="camGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer Body Frame -->
+  <rect x="75" y="30" width="250" height="440" rx="36" fill="url(#bodyGrad_INFINIX)" filter="url(#shadow)"/>
+  
+  <!-- Bezel -->
+  <rect x="80" y="35" width="240" height="430" rx="32" fill="#020617"/>
+  
+  <!-- Screen -->
+  <rect x="85" y="40" width="230" height="420" rx="28" fill="url(#screenGrad)"/>
+  
+  <!-- Wallpaper Glow Effect -->
+  <circle cx="200" cy="220" r="80" fill="#0d9488" opacity="0.18"/>
+  <circle cx="240" cy="300" r="70" fill="#38bdf8" opacity="0.12"/>
+  
+  <!-- Punch Hole / Dynamic Island -->
+  <rect x="180" y="48" width="40" height="12" rx="6" fill="#000000"/>
+  <circle cx="188" cy="54" r="3.5" fill="#1e293b"/>
+  
+  <!-- Screen Details -->
+  <text x="200" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="700" fill="#f8fafc" text-anchor="middle">12:00</text>
+  <text x="200" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">5G • PhonesDaddy</text>
+  
+  <!-- Brand watermark -->
+  <text x="200" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" fill="#ffffff" opacity="0.8" text-anchor="middle">Infinix Zero Ultra 5G</text>
+  <text x="200" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="500" fill="#38bdf8" opacity="0.9" text-anchor="middle">INFINIX</text>
+  
+  <!-- Bottom Bar Indicator -->
+  <rect x="160" y="445" width="80" height="4" rx="2" fill="#cbd5e1" opacity="0.7"/>
+</svg>

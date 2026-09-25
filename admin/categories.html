@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Categories — PhonesDaddy Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    .cat-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .cat-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <div>
+          <h2><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</h2>
+          <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Create, organize, and manage article categories for your news and blog section</p>
+        </div>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/news/new" class="btn btn-primary btn-sm">+ Write Article</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <div class="cat-card-grid">
+
+        <!-- Left Column: Add / Edit Category Form -->
+        <div class="admin-card">
+          <h3 class="admin-card-title" id="formHeading" style="margin-bottom: 16px; font-size: 16px;">+ Add New Category</h3>
+          
+          <form id="categoryForm" onsubmit="handleCategorySubmit(event)">
+            <input type="hidden" id="editCatId" value="">
+
+            <div class="form-group">
+              <label class="form-label" for="catName">Category Name <span style="color: #ef4444;">*</span></label>
+              <input type="text" id="catName" class="form-control" placeholder="e.g. AI Features, Unboxing, Discounts" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="catSlug">URL Slug</label>
+              <input type="text" id="catSlug" class="form-control" placeholder="e.g. ai-features">
+              <small style="color: #64748b; font-size: 11.5px;">Auto-generated if left empty</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="catDesc">Description</label>
+              <textarea id="catDesc" class="form-control" rows="3" placeholder="Brief description of what articles belong in this category..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+              <button type="submit" id="btnSaveCategory" class="btn btn-primary btn-block">
+                Save Category
+              </button>
+              <button type="button" id="btnCancelEdit" class="btn btn-outline" style="display: none;" onclick="cancelEdit()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Column: Existing Categories List Table -->
+        <div class="admin-card" style="padding: 0; overflow: hidden;">
+          <div style="padding: 18px 24px; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="admin-card-title" style="margin: 0; font-size: 16px;">Existing Categories</h3>
+            <span id="catTotalBadge" style="font-weight: 700; font-size: 12.5px; color: var(--admin-text-muted);">0 categories</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Category Name</th>
+                  <th>Slug</th>
+                  <th>Description</th>
+                  <th style="text-align: center;">Articles</th>
+                  <th style="text-align: center; width: 110px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="categoriesTableBody">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: #64748b; padding: 32px;">Loading categories...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    let categoriesList = [];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeQuote(str) {
+      if (!str) return '';
+      return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function generateSlug(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[\s\W-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    async function loadCategories() {
+      const tbody = document.getElementById('categoriesTableBody');
+      try {
+        const res = await fetch('/api/categories');
+        const json = await res.json();
+
+        if (!json.success || !json.data || json.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 32px;">No categories found.</td></tr>`;
+          document.getElementById('catTotalBadge').textContent = '0 categories';
+          return;
+        }
+
+        categoriesList = json.data;
+        document.getElementById('catTotalBadge').textContent = `${categoriesList.length} categories`;
+
+        tbody.innerHTML = categoriesList.map(c => `
+          <tr>
+            <td>
+              <strong style="color: var(--admin-text-main); font-size: 14px;">${escapeHtml(c.name)}</strong>
+            </td>
+            <td>
+              <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #0f766e;">${escapeHtml(c.slug)}</code>
+            </td>
+            <td style="color: #64748b; font-size: 12.5px; max-width: 250px;">
+              ${escapeHtml(c.description || '—')}
+            </td>
+            <td style="text-align: center;">
+              <a href="/admin/news?category=${encodeURIComponent(c.name)}" class="btn btn-sm" style="font-size: 12px; font-weight: 700; background: #f0fdfa; color: #0d9488; border: 1px solid #99f6e4; padding: 2px 8px; border-radius: 4px;">
+                ${c.article_count || 0}
+              </a>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: inline-flex; gap: 6px;">
+                <button onclick="startEditCategory(${c.id})" class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 12px;" title="Edit">✏️</button>
+                <button onclick="deleteCategory(${c.id}, '${escapeQuote(c.name)}', ${c.article_count || 0})" class="btn btn-sm" style="padding: 3px 8px; font-size: 12px; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;" title="Delete">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        console.error('Error loading categories:', err);
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #dc2626; padding: 32px;">Error loading categories.</td></tr>`;
+      }
+    }
+
+    function startEditCategory(id) {
+      const cat = categoriesList.find(c => c.id === id);
+      if (!cat) return;
+
+      document.getElementById('editCatId').value = cat.id;
+      document.getElementById('catName').value = cat.name;
+      document.getElementById('catSlug').value = cat.slug;
+      document.getElementById('catDesc').value = cat.description || '';
+
+      document.getElementById('formHeading').textContent = '✏️ Edit Category';
+      document.getElementById('btnSaveCategory').textContent = 'Update Category';
+      document.getElementById('btnCancelEdit').style.display = 'inline-block';
+      document.getElementById('catName').focus();
+    }
+
+    function cancelEdit() {
+      document.getElementById('categoryForm').reset();
+      document.getElementById('editCatId').value = '';
+      document.getElementById('formHeading').textContent = '+ Add New Category';
+      document.getElementById('btnSaveCategory').textContent = 'Save Category';
+      document.getElementById('btnCancelEdit').style.display = 'none';
+    }
+
+    async function handleCategorySubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editCatId').value;
+      const name = document.getElementById('catName').value.trim();
+      let slug = document.getElementById('catSlug').value.trim();
+      const description = document.getElementById('catDesc').value.trim();
+
+      if (!name) {
+        alert('Category name is required.');
+        return;
+      }
+
+      if (!slug) {
+        slug = generateSlug(name);
+      }
+
+      const saveBtn = document.getElementById('btnSaveCategory');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const url = id ? `/api/admin/categories/admin/${id}` : '/api/admin/categories/admin';
+        const method = id ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, slug, description }),
+          credentials: 'same-origin'
+        });
+
+        const json = await res.json();
+        if (json.success) {
+          cancelEdit();
+          loadCategories();
+        } else {
+          alert('Failed to save category: ' + (json.message || 'Unknown error'));
+        }
+      } catch (err) {
+        console.error('Error saving category:', err);
+        alert('Server error saving category');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = id ? 'Update Category' : 'Save Category';
+      }
+    }
+
+    async function deleteCategory(id, name, articleCount) {
+      const msg = articleCount > 0
+        ? `Are you sure you want to delete category "${name}"?\n\nNote: ${articleCount} article(s) currently in this category will be automatically reassigned to "Hot News".`
+        : `Are you sure you want to delete category "${name}"?`;
+
+      if (!confirm(msg)) return;
+
+      try {
+        const res = await fetch(`/api/admin/categories/admin/${id}`, { method: 'DELETE' });
+        const json = await res.json();
+        if (json.success) {
+          loadCategories();
+        } else {
+          alert('Failed to delete category: ' + (json.message || 'Unknown error'));
+        }
+      } catch (err) {
+        console.error('Error deleting category:', err);
+        alert('Server error while deleting category');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCategories();
+
+      document.getElementById('catName').addEventListener('blur', (e) => {
+        const slugInput = document.getElementById('catSlug');
+        if (!slugInput.value.trim() && e.target.value.trim()) {
+          slugInput.value = generateSlug(e.target.value);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

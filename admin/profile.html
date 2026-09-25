@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Profile &amp; Password — PhonesDaddy</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle active" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink active">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <div>
+          <h2>Admin Profile &amp; Password Management</h2>
+          <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">
+            View active credentials, copy current password, or securely update your login credentials.
+          </p>
+        </div>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/settings" class="btn btn-outline btn-sm">⚙️ Site Settings</a>
+        <button type="button" onclick="submitAdminProfile(event)" id="btnSaveProfileTop" class="btn btn-primary btn-sm">💾 Save Changes</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Status Toast / Alert -->
+      <div id="profileAlert" style="display: none; padding: 14px 18px; border-radius: var(--admin-radius); margin-bottom: 20px; font-weight: 600; font-size: 14px;"></div>
+
+      <form id="adminProfileForm" onsubmit="submitAdminProfile(event); return false;">
+        <div class="admin-card" style="max-width: 840px; margin-bottom: 24px;">
+          <div class="admin-card-header" style="border-bottom: 1px solid var(--admin-border); padding-bottom: 14px; margin-bottom: 20px;">
+            <div>
+              <h3 class="admin-card-title" style="display: flex; align-items: center; gap: 10px;">
+                <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Master Admin Profile &amp; Credentials</span>
+                <span class="badge" style="background: #ecfdf5; color: #047857; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Active Account</span>
+              </h3>
+              <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 4px;">
+                View or copy your current active password, update your login credentials, or set a new password.
+              </p>
+            </div>
+          </div>
+
+          <!-- Current Credentials Display -->
+          <div style="background: #f8fafc; border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 24px;">
+            <h4 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>🔑 Current Active Credentials</span>
+              <span style="font-size: 11.5px; color: #64748b; font-weight: 500;">(Used for logging in at /admin/login)</span>
+            </h4>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+              <!-- Username -->
+              <div>
+                <label class="form-label" for="profileUsername" style="font-size: 12px; font-weight: 700; color: #475569;">Admin Username</label>
+                <input type="text" id="profileUsername" class="form-control" style="background: #ffffff; font-weight: 600;" value="admin" required>
+                <small style="font-size: 11px; color: #64748b; margin-top: 3px; display: block;">Login identifier</small>
+              </div>
+
+              <!-- Display Name -->
+              <div>
+                <label class="form-label" for="profileDisplayName" style="font-size: 12px; font-weight: 700; color: #475569;">Display Name</label>
+                <input type="text" id="profileDisplayName" class="form-control" style="background: #ffffff; font-weight: 600;" value="PhonesDaddy Master Admin">
+                <small style="font-size: 11px; color: #64748b; margin-top: 3px; display: block;">Official name shown on articles and reviews</small>
+              </div>
+
+              <!-- Current Password Field with Eye Toggle & Copy -->
+              <div style="grid-column: 1 / -1;">
+                <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569; display: flex; justify-content: space-between; align-items: center;">
+                  <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Current Active Password</span>
+                  <button type="button" onclick="copyCurrentPassword()" style="background: none; border: none; color: #0d9488; cursor: pointer; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                    undefined Copy Password
+                  </button>
+                </label>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <div style="position: relative; flex: 1; min-width: 220px;">
+                    <input type="password" id="profileCurrentPassword" class="form-control" style="background: #ffffff; font-family: monospace; font-size: 15px; font-weight: 700; letter-spacing: 1px;" readonly value="admin123">
+                  </div>
+                  <button type="button" id="btnToggleCurrentPw" onclick="toggleCurrentPasswordVisibility()" class="btn btn-outline btn-sm" style="height: 38px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                    <span id="pwEyeIcon"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="pwEyeText">Show Password</span>
+                  </button>
+                </div>
+                <small style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">This is your active password currently saved in the database.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Change Password Section -->
+          <div style="border-top: 1px solid var(--admin-border); padding-top: 20px;">
+            <h4 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Change Password</span>
+              <span style="font-size: 11.5px; color: #64748b; font-weight: 500;">(Leave empty if keeping current password)</span>
+            </h4>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px;">
+              <div>
+                <label class="form-label" for="newAdminPassword" style="font-size: 12px; font-weight: 700; color: #475569;">New Password</label>
+                <div style="position: relative;">
+                  <input type="password" id="newAdminPassword" class="form-control" placeholder="Enter new password (min 4 chars)" autocomplete="new-password">
+                  <button type="button" onclick="toggleInputPw('newAdminPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 14px;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                </div>
+              </div>
+              <div>
+                <label class="form-label" for="confirmAdminPassword" style="font-size: 12px; font-weight: 700; color: #475569;">Confirm New Password</label>
+                <div style="position: relative;">
+                  <input type="password" id="confirmAdminPassword" class="form-control" placeholder="Confirm new password" autocomplete="new-password">
+                  <button type="button" onclick="toggleInputPw('confirmAdminPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 14px;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+              <button type="submit" id="btnSaveProfile" class="btn btn-primary" style="padding: 10px 22px; font-weight: 700;">
+                💾 Save Profile &amp; Password Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAdminProfile();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Phones — PhonesDaddy Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <h2>Mobile Phones Management</h2>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/phones/new" class="btn btn-primary btn-sm" id="btnAdminAddNewPhone">+ Add Phone</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Advanced Search & Filter Card -->
+      <div class="admin-card" style="margin-bottom: 20px; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 15px; font-weight: 700; color: var(--admin-dark); display: flex; align-items: center; gap: 8px;">
+            <span>undefined Advanced Phone Search &amp; Filters</span>
+          </h3>
+          <button type="button" id="btnAdminResetFilters" class="btn btn-outline btn-sm">Reset Filters</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; align-items: flex-end;">
+          <!-- Keyword Search -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Search Query</label>
+            <input type="text" id="adminPhoneSearchInput" class="form-control" placeholder="Search by name, slug...">
+          </div>
+
+          <!-- Brand Filter -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Manufacturer / Brand</label>
+            <select id="adminFilterBrand" class="form-control">
+              <option value="">All Brands</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Market Status</label>
+            <select id="adminFilterStatus" class="form-control">
+              <option value="">All Statuses</option>
+              <option value="Available">Available</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Rumored">Rumored</option>
+              <option value="Discontinued">Discontinued</option>
+            </select>
+          </div>
+
+          <!-- Sort Order -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Sort Order</label>
+            <select id="adminFilterSort" class="form-control">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="views">Most Views</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+          </div>
+
+          <!-- Price Range Min -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Min Price (PKR)</label>
+            <input type="number" id="adminFilterMinPrice" class="form-control" placeholder="Min" min="0" step="5000">
+          </div>
+
+          <!-- Price Range Max -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Max Price (PKR)</label>
+            <input type="number" id="adminFilterMaxPrice" class="form-control" placeholder="Max" min="0" step="5000">
+          </div>
+
+          <!-- Flags & Items Per Page -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Items per page</label>
+            <select id="adminFilterLimit" class="form-control">
+              <option value="15">15 per page</option>
+              <option value="25" selected>25 per page</option>
+              <option value="50">50 per page</option>
+              <option value="100">100 per page</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center; padding-bottom: 8px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" id="adminFilterFeatured">
+              <span>Featured</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" id="adminFilterPopular">
+              <span>Popular</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phones Data Table Card -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div style="font-size: 14px; font-weight: 700; color: var(--admin-dark);" id="adminPhonesCountBadge">
+            Showing phones...
+          </div>
+          <a href="/admin/phones/new" class="btn btn-primary btn-sm">+ Add New Phone</a>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Thumb</th>
+                <th>Model / Slug</th>
+                <th>Brand</th>
+                <th>Retail Price</th>
+                <th>Status</th>
+                <th>Flags</th>
+                <th>Views</th>
+                <th style="width: 100px; text-align: center;">Reviews</th>
+                <th style="width: 190px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminPhonesTableBody">
+              <tr><td colspan="9" style="text-align: center; color: #64748b; padding: 28px;">Loading phones...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-wrap" id="adminPhonesPagination" style="margin-top: 24px;"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

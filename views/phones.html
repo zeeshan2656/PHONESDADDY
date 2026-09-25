@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Mobile Phones &amp; Specifications — {{SITE_NAME}}</title>
+  <meta name="description" content="Browse and filter mobile phones by brand, price range, RAM, storage, and 5G connectivity. Compare detailed specifications on {{SITE_NAME}}.">
+  <link rel="canonical" href="{{SITE_URL}}/phones">
+  {{SITE_FAVICON_TAG}}
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-logo">
+        {{SITE_LOGO_HTML}}
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/phones" class="nav-link active">Mobiles</a></li>
+          <li><a href="/brands" class="nav-link">Brands</a></li>
+          <li><a href="/compare" class="nav-link">Compare</a></li>
+          <li><a href="/news" class="nav-link">News</a></li>
+          <li><a href="/admin/login" class="nav-link nav-login-btn"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-search">
+        <span class="search-icon"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="headerSearchInput" placeholder="Search phones, brands..." autocomplete="off">
+        <div class="search-results-dropdown" id="headerSearchDropdown"></div>
+      </div>
+
+      <div class="header-mobile-actions">
+        <button class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Toggle Search">
+          <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header Banner -->
+  <div style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 24px 0;">
+    <div class="container">
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark); margin-bottom: 4px;">Mobile Phones Catalog</h1>
+      <p style="color: var(--text-muted); font-size: 14px;">Browse and filter smartphones by brand, technical specifications, and price range.</p>
+    </div>
+  </div>
+
+  <!-- Catalog Main -->
+  <main class="container" style="padding-top: 32px; padding-bottom: 60px;">
+    <div class="catalog-layout">
+
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--dark);">Filters</h3>
+          <button id="btnResetFilters" style="background: none; border: none; color: var(--primary); font-size: 13px; font-weight: 600; cursor: pointer;">Reset All</button>
+        </div>
+
+        <!-- 5G Toggle -->
+        <div class="filter-group">
+          <label class="filter-label" style="font-weight: 700;">
+            <input type="checkbox" id="filter5G">
+            <span>5G Connectivity Only</span>
+          </label>
+        </div>
+
+        <!-- Brand Filter -->
+        <div class="filter-group">
+          <div class="filter-title">Brands</div>
+          <div class="filter-options-list" id="brandFiltersList">
+            <div style="color: #94a3b8; font-size: 13px;">Loading brands...</div>
+          </div>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+          <div class="filter-title">Price Range (PKR)</div>
+          <div class="filter-price-inputs">
+            <input type="number" id="filterMinPrice" placeholder="Min" min="0" step="5000">
+            <span style="color: #94a3b8;">-</span>
+            <input type="number" id="filterMaxPrice" placeholder="Max" min="0" step="5000">
+          </div>
+          <button id="btnApplyPrice" class="btn btn-outline btn-sm btn-block" style="margin-top: 10px;">Apply Price</button>
+        </div>
+
+        <!-- RAM Filter -->
+        <div class="filter-group">
+          <div class="filter-title">RAM</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="" checked>
+              <span>Any RAM</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="16GB">
+              <span>16 GB &amp; above</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="12GB">
+              <span>12 GB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="8GB">
+              <span>8 GB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="6GB">
+              <span>6 GB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterRam" value="4GB">
+              <span>4 GB</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Storage Filter -->
+        <div class="filter-group">
+          <div class="filter-title">Internal Storage</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label class="filter-label">
+              <input type="radio" name="filterStorage" value="" checked>
+              <span>Any Storage</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterStorage" value="1TB">
+              <span>1 TB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterStorage" value="512GB">
+              <span>512 GB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterStorage" value="256GB">
+              <span>256 GB</span>
+            </label>
+            <label class="filter-label">
+              <input type="radio" name="filterStorage" value="128GB">
+              <span>128 GB</span>
+            </label>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Phones Grid & Sort Bar -->
+      <section>
+        <div class="catalog-top-bar">
+          <div class="catalog-count" id="catalogTotalCount">Loading phones...</div>
+
+          <div class="catalog-sort">
+            <label for="catalogSortSelect" style="color: var(--text-muted); font-weight: 600;">Sort By:</label>
+            <select id="catalogSortSelect">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="phones-grid" id="phonesCatalogGrid">
+          <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 48px;">Loading catalog...</div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrap" id="catalogPagination"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="color: #fff; margin-bottom: 14px;">
+            {{SITE_FOOTER_LOGO_HTML}}
+          </div>
+          <p style="font-size: 14px; line-height: 1.6;">
+            {{FOOTER_ABOUT}}
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="/phones">All Mobiles</a></li>
+            <li><a href="/compare">Compare Devices</a></li>
+            <li><a href="/brands">All Brands</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Top Brands</h4>
+          <ul class="footer-links">
+            <li><a href="/brand/samsung">Samsung</a></li>
+            <li><a href="/brand/apple">Apple</a></li>
+            <li><a href="/brand/xiaomi">Xiaomi</a></li>
+            <li><a href="/brand/vivo">Vivo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company &amp; Legal</h4>
+          <ul class="footer-links" id="dynamicFooterPages">
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>System</h4>
+          <ul class="footer-links">
+            <li><a href="/sitemap.xml">XML Sitemap</a></li>
+            <li><a href="/admin">Admin Panel</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        {{FOOTER_COPYRIGHT}}
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/icons.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/phones.js"></script>
+</body>
+</html>

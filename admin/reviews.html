@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews &amp; Comments — PhonesDaddy Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    .star-display {
+      color: #f59e0b;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .badge-review {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-comment {
+      background: #f0fdfa;
+      color: #0d9488;
+      border: 1px solid #99f6e4;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-approved {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .badge-rejected {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 2fr;
+      gap: 12px;
+    }
+    @media (max-width: 992px) {
+      .filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .comment-text-box {
+      max-width: 320px;
+      line-height: 1.5;
+      font-size: 13px;
+      color: #334155;
+      word-break: break-word;
+    }
+    .user-info-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12.5px;
+    }
+    .user-name-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 13.5px;
+    }
+    .user-contact {
+      color: #64748b;
+    }
+    .user-web-link {
+      color: #0d9488;
+      text-decoration: underline;
+      font-size: 11.5px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <div>
+          <h2>Reviews &amp; Comments Moderation</h2>
+          <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">
+            Moderate phone ratings, reviews, and blog comments with auto-approval &amp; 1-click rejection
+          </p>
+        </div>
+      </div>
+      <div class="admin-topbar-actions">
+        <button onclick="refreshReviews()" class="btn btn-outline btn-sm">🔄 Refresh List</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Metrics Stat Cards -->
+      <div class="admin-stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-title">Total Feedback</div>
+          <div class="stat-value" id="statTotalFeedback">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Mobile Reviews</div>
+          <div class="stat-value" id="statPhoneReviews" style="color: #2563eb;">-</div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+            Avg Rating: <strong id="statAvgRating" style="color: #f59e0b;">-</strong>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog Comments</div>
+          <div class="stat-value" id="statNewsComments" style="color: #0d9488;">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">🔴 Rejected Feedback</div>
+          <div class="stat-value" id="statRejectedCount" style="color: #ef4444;">-</div>
+        </div>
+      </div>
+
+      <!-- Advanced Filter Toolbar Card -->
+      <div class="admin-card" style="margin-bottom: 20px;">
+        <div class="filter-grid">
+          <!-- Type Filter -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="filterType">Filter by Type</label>
+            <select id="filterType" class="form-control" onchange="applyFilters()">
+              <option value="all">All Types</option>
+              <option value="phone"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Mobile Reviews</option>
+              <option value="news"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog Comments</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="filterStatus">Filter by Status</label>
+            <select id="filterStatus" class="form-control" onchange="applyFilters()">
+              <option value="all">All Statuses</option>
+              <option value="approved">🟢 Approved (Live)</option>
+              <option value="rejected">🔴 Rejected (Hidden)</option>
+            </select>
+          </div>
+
+          <!-- Rating Filter (for phones) -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="filterRating">Filter by Rating</label>
+            <select id="filterRating" class="form-control" onchange="applyFilters()">
+              <option value="all">All Ratings</option>
+              <option value="5">★★★★★ 5 Stars</option>
+              <option value="4">★★★★ 4 Stars</option>
+              <option value="3">★★★ 3 Stars</option>
+              <option value="2">★★ 2 Stars</option>
+              <option value="1">★ 1 Star</option>
+            </select>
+          </div>
+
+          <!-- Search Box -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="filterSearch">Search User, Email, Phone, or Message</label>
+            <input type="text" id="filterSearch" class="form-control" placeholder="Type keyword to search...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Table Card -->
+      <div class="admin-card">
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 170px;">User Details</th>
+                <th style="width: 180px;">Target Item</th>
+                <th style="width: 100px;">Type</th>
+                <th style="width: 110px;">Rating</th>
+                <th>Review / Comment Message</th>
+                <th style="width: 95px;">Status</th>
+                <th style="width: 110px;">Date</th>
+                <th style="width: 140px; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: #64748b; padding: 36px;">
+                  Loading reviews and comments...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="reviewsPaginationWrap" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--admin-border);">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Thread & Reply Modal -->
+  <div id="threadModal" style="display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;" onclick="if (event.target === this) closeThreadModal();">
+    <div style="background: #ffffff; border-radius: 12px; max-width: 760px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #cbd5e1; overflow: hidden;" onclick="event.stopPropagation();">
+      
+      <!-- Modal Header -->
+      <div style="padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">
+            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Feedback Thread &amp; Admin Reply
+          </h3>
+          <div id="modalItemSubtitle" style="font-size: 13px; color: #64748b; margin-top: 3px;">Loading...</div>
+        </div>
+        <button onclick="closeThreadModal()" style="background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer; line-height: 1;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div id="modalThreadBody" style="padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px;">
+        <div style="text-align: center; padding: 40px; color: #64748b;">Loading thread details...</div>
+      </div>
+
+      <!-- Modal Footer (Reply Form) -->
+      <div style="padding: 18px 24px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+        <form id="adminReplyForm" onsubmit="submitAdminReply(event)">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 13px; font-weight: 700; color: #0f172a; margin: 0;">
+              👑 Write Official Admin Reply (PhonesDaddy Team):
+            </label>
+            <!-- Formatting toolbar -->
+            <div style="display: flex; gap: 4px; align-items: center;">
+              <button type="button" onclick="insertAdminReplyFormat('b')" style="padding: 2px 7px; font-size: 11px; font-weight: bold; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">B</button>
+              <button type="button" onclick="insertAdminReplyFormat('i')" style="padding: 2px 7px; font-size: 11px; font-style: italic; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">I</button>
+              <button type="button" onclick="insertAdminReplyLink()" style="padding: 2px 7px; font-size: 11px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">undefined Link</button>
+              <button type="button" onclick="insertAdminReplyImage()" style="padding: 2px 7px; font-size: 11px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">undefined Add Photo</button>
+              <input type="file" id="adminReplyImgInput" accept="image/*" style="display: none;" onchange="handleAdminReplyImageUpload(this)">
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <textarea id="adminReplyMessage" rows="2" class="form-control" placeholder="Type your response to the user here (will be published with official badge)..." required style="flex: 1; padding: 10px 12px; font-size: 13.5px; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+            <button type="submit" id="btnSendAdminReply" class="btn btn-primary" style="white-space: nowrap; padding: 10px 18px; font-weight: 700;">
+              Send Reply &rarr;
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    let currentFeedbackPage = 1;
+
+    async function loadFeedbackStats() {
+      try {
+        const res = await fetch('/api/admin/reviews/stats');
+        const json = await res.json();
+        if (json.success && json.data) {
+          const s = json.data;
+          document.getElementById('statTotalFeedback').textContent = (s.total || 0).toLocaleString();
+          document.getElementById('statPhoneReviews').textContent = (s.phone_reviews || 0).toLocaleString();
+          document.getElementById('statAvgRating').textContent = (s.avg_phone_rating || '0.0') + ' ★';
+          document.getElementById('statNewsComments').textContent = (s.news_comments || 0).toLocaleString();
+          document.getElementById('statRejectedCount').textContent = (s.rejected || 0).toLocaleString();
+        }
+      } catch (err) {
+        console.error('Error loading feedback stats:', err);
+      }
+    }
+
+    async function loadFeedbackList() {
+      const tbody = document.getElementById('reviewsTableBody');
+      const type = document.getElementById('filterType').value;
+      const status = document.getElementById('filterStatus').value;
+      const rating = document.getElementById('filterRating').value;
+      const search = document.getElementById('filterSearch').value;
+
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 36px;">Loading reviews and comments...</td></tr>`;
+
+      try {
+        const params = new URLSearchParams({
+          page: currentFeedbackPage,
+          limit: 20,
+          type: type || 'all',
+          status: status || 'all',
+          rating: rating || 'all',
+          search: search || ''
+        });
+
+        const res = await fetch(`/api/admin/reviews/list?${params.toString()}`);
+        const json = await res.json();
+
+        if (!json.success || !json.data || json.data.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" style="text-align: center; color: #64748b; padding: 40px;">
+                No reviews or comments found matching current filters.
+              </td>
+            </tr>`;
+          renderPagination({ total: 0, page: 1, limit: 20, totalPages: 1 });
+          return;
+        }
+
+        let html = '';
+        json.data.forEach(item => {
+          const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric'
+          }) : '—';
+
+          // Type badge
+          const typeBadge = item.entity_type === 'phone' 
+            ? `<span class="badge-review"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Mobile</span>`
+            : `<span class="badge-comment"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog</span>`;
+
+          // Rating display
+          let ratingHtml = '<span style="color: #94a3b8;">—</span>';
+          if (item.rating) {
+            const stars = '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating);
+            ratingHtml = `<span class="star-display">${stars}</span> <strong style="font-size: 12px; color: #0f172a;">${item.rating}/5</strong>`;
+          }
+
+          // Status badge
+          const statusBadge = item.status === 'approved'
+            ? `<span class="badge-approved">🟢 Live</span>`
+            : `<span class="badge-rejected">🔴 Rejected</span>`;
+
+          // Toggle action button
+          const toggleActionBtn = item.status === 'approved'
+            ? `<button onclick="handleStatusChange(${item.id}, 'rejected')" class="btn btn-sm" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 4px 8px; font-size: 12px;" title="Reject and hide from public site">❌ Reject</button>`
+            : `<button onclick="handleStatusChange(${item.id}, 'approved')" class="btn btn-sm" style="background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 4px 8px; font-size: 12px;" title="Approve and publish to public site"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Approve</button>`;
+
+          // Website link
+          const webHtml = item.user_website 
+            ? `<a href="${escapeHtml(item.user_website)}" target="_blank" rel="noopener noreferrer" class="user-web-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> ${escapeHtml(item.user_website.replace(/^https?:\/\//i, ''))}</a>`
+            : '';
+
+          // Reply indicator
+          const replyTag = item.parent_id 
+            ? `<div style="font-size: 11px; color: #2563eb; margin-top: 2px;">↳ Reply to #${item.parent_id}</div>` 
+            : '';
+
+          html += `
+            <tr style="cursor: pointer; transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="if (!event.target.closest('a') && !event.target.closest('button')) openThreadModal(${item.id})">
+              <td>
+                <div class="user-info-box">
+                  <span class="user-name-title">${escapeHtml(item.user_name)}</span>
+                  <span class="user-contact">undefined ${escapeHtml(item.user_email_phone)}</span>
+                  ${webHtml}
+                  ${replyTag}
+                </div>
+              </td>
+              <td>
+                <div style="font-weight: 600; font-size: 13.5px;">
+                  <a href="${item.item_url}" target="_blank" style="color: #0f172a; text-decoration: underline;" onclick="event.stopPropagation()">
+                    ${escapeHtml(item.item_title || 'View Item')}
+                  </a>
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+                  ${item.entity_type === 'phone' ? 'Smartphone Specs' : 'Blog Article'}
+                </div>
+              </td>
+              <td>${typeBadge}</td>
+              <td>${ratingHtml}</td>
+              <td>
+                <div class="comment-text-box" style="max-height: 60px; overflow: hidden;">
+                  ${formatCommentMessage(item.message)}
+                </div>
+              </td>
+              <td>${statusBadge}</td>
+              <td style="font-size: 12px; color: #64748b; white-space: nowrap;">${dateStr}</td>
+              <td style="text-align: right; white-space: nowrap;">
+                <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
+                  <button onclick="event.stopPropagation(); openThreadModal(${item.id})" class="btn btn-sm btn-outline" style="padding: 4px 9px; font-size: 12px; font-weight: 700; color: #0d9488; border-color: #99f6e4; background: #f0fdfa;" title="View full conversation and write admin reply">
+                    ${window.ICONS ? ICONS.comment : ''} ${item.reply_count > 0 ? `Thread (${item.reply_count})` : 'Reply'}
+                  </button>
+                  ${toggleActionBtn}
+                  <button onclick="event.stopPropagation(); handleDeleteFeedback(${item.id})" class="btn btn-sm" style="background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; padding: 4px 8px; font-size: 12px;" title="Delete permanently"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+        renderPagination(json.pagination);
+      } catch (err) {
+        console.error('Error loading feedback list:', err);
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #ef4444; padding: 36px;">Error loading feedback data</td></tr>`;
+      }
+    }
+
+    function renderPagination(p) {
+      const wrap = document.getElementById('reviewsPaginationWrap');
+      if (!p || p.totalPages <= 1) {
+        wrap.innerHTML = `<span style="font-size: 13px; color: #64748b;">Showing ${p ? p.total : 0} items</span>`;
+        return;
+      }
+
+      let html = `<span style="font-size: 13px; color: #64748b;">Page ${p.page} of ${p.totalPages} (${p.total} total items)</span>`;
+      html += `<div style="display: flex; gap: 6px;">`;
+
+      if (p.page > 1) {
+        html += `<button class="btn btn-outline btn-sm" onclick="changeFeedbackPage(${p.page - 1})">&laquo; Prev</button>`;
+      }
+
+      for (let i = 1; i <= p.totalPages; i++) {
+        if (i === 1 || i === p.totalPages || (i >= p.page - 1 && i <= p.page + 1)) {
+          const activeClass = i === p.page ? 'btn-primary' : 'btn-outline';
+          html += `<button class="btn ${activeClass} btn-sm" onclick="changeFeedbackPage(${i})">${i}</button>`;
+        } else if (i === p.page - 2 || i === p.page + 2) {
+          html += `<span style="padding: 4px 6px; color: #94a3b8;">...</span>`;
+        }
+      }
+
+      if (p.page < p.totalPages) {
+        html += `<button class="btn btn-outline btn-sm" onclick="changeFeedbackPage(${p.page + 1})">Next &raquo;</button>`;
+      }
+
+      html += `</div>`;
+      wrap.innerHTML = html;
+    }
+
+    function changeFeedbackPage(p) {
+      currentFeedbackPage = p;
+      loadFeedbackList();
+    }
+
+    function applyFilters() {
+      currentFeedbackPage = 1;
+      loadFeedbackList();
+    }
+
+    function refreshReviews() {
+      loadFeedbackStats();
+      loadFeedbackList();
+      showAdminToast('Refreshed feedback list', 'info');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Read initial query params from URL (e.g. from phones/news list links)
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      const typeParam = urlParams.get('type');
+      const statusParam = urlParams.get('status');
+
+      if (searchParam) {
+        const sEl = document.getElementById('filterSearch');
+        if (sEl) sEl.value = searchParam;
+      }
+      if (typeParam) {
+        const tEl = document.getElementById('filterType');
+        if (tEl) tEl.value = typeParam;
+      }
+      if (statusParam) {
+        const stEl = document.getElementById('filterStatus');
+        if (stEl) stEl.value = statusParam;
+      }
+
+      loadFeedbackStats();
+      loadFeedbackList();
+
+      document.getElementById('filterSearch').addEventListener('input', debounce(() => {
+        currentFeedbackPage = 1;
+        loadFeedbackList();
+      }, 350));
+    });
+  </script>
+</body>
+</html>

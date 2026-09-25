@@ -1,0 +1,347 @@
+const PhoneModel = require('../models/phoneModel');
+const BrandModel = require('../models/brandModel');
+const { scrapePhoneFromUrl } = require('../utils/phoneScraper');
+
+class PhoneController {
+  static async list(req, res, next) {
+    try {
+      const {
+        page = 1,
+        limit = 24,
+        brand,
+        minPrice,
+        maxPrice,
+        ram,
+        storage,
+        is5G,
+        sort = 'newest',
+        status,
+        search,
+        featured,
+        popular
+      } = req.query;
+
+      const result = await PhoneModel.getPhones({
+        page,
+        limit,
+        brand,
+        minPrice,
+        maxPrice,
+        ram,
+        storage,
+        is5G,
+        sort,
+        status: status || null,
+        search: search || null,
+        featured: featured !== undefined && featured !== '' ? featured === 'true' || featured === '1' : null,
+        popular: popular !== undefined && popular !== '' ? popular === 'true' || popular === '1' : null
+      });
+
+      return res.json({
+        success: true,
+        data: result.phones,
+        pagination: result.pagination
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getLatest(req, res, next) {
+    try {
+      const limit = req.query.limit || 8;
+      const result = await PhoneModel.getPhones({ page: 1, limit, sort: 'newest' });
+      return res.json({ success: true, data: result.phones });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getPopular(req, res, next) {
+    try {
+      const limit = req.query.limit || 8;
+      const result = await PhoneModel.getPhones({ page: 1, limit, sort: 'popular' });
+      return res.json({ success: true, data: result.phones });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getUpcoming(req, res, next) {
+    try {
+      const limit = req.query.limit || 8;
+      const result = await PhoneModel.getPhones({ page: 1, limit, status: 'Upcoming' });
+      return res.json({ success: true, data: result.phones });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getBySlug(req, res, next) {
+    try {
+      const { slug } = req.params;
+      const phone = await PhoneModel.getPhoneBySlug(slug);
+
+      if (!phone) {
+        return res.status(404).json({ success: false, message: 'Phone not found' });
+      }
+
+      // Asynchronously increment view count without blocking response
+      PhoneModel.incrementViews(phone.id).catch(console.error);
+
+      return res.json({ success: true, data: phone });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const phone = await PhoneModel.getPhoneById(id);
+
+      if (!phone) {
+        return res.status(404).json({ success: false, message: 'Phone not found' });
+      }
+
+      return res.json({ success: true, data: phone });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async create(req, res, next) {
+    try {
+      const {
+        brand_id,
+        name,
+        slug,
+        short_description,
+        release_date,
+        status,
+        price,
+        featured,
+        popular,
+        meta_title,
+        meta_description,
+        specs,
+        prices
+      } = req.body;
+
+      if (!brand_id || !name || !slug) {
+        return res.status(400).json({ success: false, message: 'Brand, name, and slug are required.' });
+      }
+
+      let imagePath = '/images/placeholder.svg';
+      if (req.file) {
+        imagePath = `/uploads/phones/${req.file.filename}`;
+      } else if (req.body.image && req.body.image.trim()) {
+        imagePath = req.body.image.trim();
+      }
+
+      // Parse JSON strings if passed via multipart/form-data
+      let parsedSpecs = [];
+      if (specs) {
+        parsedSpecs = typeof specs === 'string' ? JSON.parse(specs) : specs;
+      }
+
+      let parsedPrices = [];
+      if (prices) {
+        parsedPrices = typeof prices === 'string' ? JSON.parse(prices) : prices;
+      }
+
+      // Parse images array
+      let parsedImages;
+      const rawImages = req.body.images;
+      if (rawImages) {
+        try {
+          parsedImages = typeof rawImages === 'string' ? JSON.parse(rawImages) : rawImages;
+        } catch (_) {
+          parsedImages = String(rawImages).split(',').map(s => s.trim()).filter(Boolean);
+        }
+      }
+
+      const phoneData = {
+        brand_id: parseInt(brand_id, 10),
+        name: name.trim(),
+        slug: slug.trim().toLowerCase(),
+        short_description: short_description || '',
+        image: imagePath,
+        images: parsedImages || (imagePath !== '/images/placeholder.svg' ? [imagePath] : undefined),
+        release_date: release_date || '',
+        status: status || 'Available',
+        price: parseFloat(price) || 0,
+        featured: featured === 'true' || featured === true || featured === 1,
+        popular: popular === 'true' || popular === true || popular === 1,
+        meta_title,
+        meta_description
+      };
+
+      const phoneId = await PhoneModel.createPhone(phoneData, parsedSpecs, parsedPrices);
+
+      return res.status(201).json({
+        success: true,
+        message: 'Phone created successfully',
+        data: { id: phoneId, slug: phoneData.slug }
+      });
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ success: false, message: 'A phone with this slug already exists.' });
+      }
+      next(err);
+    }
+  }
+
+  static async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const {
+        brand_id,
+        name,
+        slug,
+        short_description,
+        release_date,
+        status,
+        price,
+        featured,
+        popular,
+        meta_title,
+        meta_description,
+        specs,
+        prices
+      } = req.body;
+
+      if (!brand_id || !name || !slug) {
+        return res.status(400).json({ success: false, message: 'Brand, name, and slug are required.' });
+      }
+
+      const phoneData = {
+        brand_id: parseInt(brand_id, 10),
+        name: name.trim(),
+        slug: slug.trim().toLowerCase(),
+        short_description: short_description || '',
+        release_date: release_date || '',
+        status: status || 'Available',
+        price: parseFloat(price) || 0,
+        featured: featured === 'true' || featured === true || featured === 1,
+        popular: popular === 'true' || popular === true || popular === 1,
+        meta_title,
+        meta_description
+      };
+
+      if (req.file) {
+        phoneData.image = `/uploads/phones/${req.file.filename}`;
+      } else if (req.body.remove_image === 'true' || req.body.remove_image === true) {
+        phoneData.image = '/images/placeholder.svg';
+      } else if (req.body.image) {
+        phoneData.image = req.body.image;
+      }
+
+      // Handle images gallery array
+      if (req.body.images !== undefined) {
+        try {
+          phoneData.images = typeof req.body.images === 'string'
+            ? JSON.parse(req.body.images)
+            : req.body.images;
+        } catch (_) {
+          phoneData.images = String(req.body.images).split(',').map(s => s.trim()).filter(Boolean);
+        }
+      }
+
+      let parsedSpecs = null;
+      if (specs !== undefined) {
+        parsedSpecs = typeof specs === 'string' ? JSON.parse(specs) : specs;
+      }
+
+      let parsedPrices = null;
+      if (prices !== undefined) {
+        parsedPrices = typeof prices === 'string' ? JSON.parse(prices) : prices;
+      }
+
+      await PhoneModel.updatePhone(id, phoneData, parsedSpecs, parsedPrices);
+
+      return res.json({
+        success: true,
+        message: 'Phone updated successfully'
+      });
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ success: false, message: 'A phone with this slug already exists.' });
+      }
+      next(err);
+    }
+  }
+
+  static async deletePhone(req, res, next) {
+    try {
+      const { id } = req.params;
+      const success = await PhoneModel.deletePhone(id);
+
+      if (!success) {
+        return res.status(404).json({ success: false, message: 'Phone not found' });
+      }
+
+      return res.json({ success: true, message: 'Phone deleted successfully' });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async fetchExternalSpecs(req, res, next) {
+    try {
+      const { url } = req.body;
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ success: false, message: 'A valid URL is required.' });
+      }
+
+      const scrapedData = await scrapePhoneFromUrl(url);
+
+      // Attempt to match brand in the database
+      let matchedBrand = null;
+      if (scrapedData.brand) {
+        const allBrands = await BrandModel.getAllBrands();
+        matchedBrand = allBrands.find(b => 
+          b.name.toLowerCase() === scrapedData.brand.toLowerCase() ||
+          b.slug.toLowerCase() === scrapedData.brand.toLowerCase()
+        );
+      }
+
+      // Ensure model name contains ONLY the model, not the brand prefix
+      let cleanModelName = scrapedData.name || '';
+      if (matchedBrand) {
+        const bName = matchedBrand.name.toLowerCase();
+        if (cleanModelName.toLowerCase().startsWith(bName + ' ')) {
+          cleanModelName = cleanModelName.slice(matchedBrand.name.length).trim();
+        }
+      }
+      if (scrapedData.brand) {
+        const bName = scrapedData.brand.toLowerCase();
+        if (cleanModelName.toLowerCase().startsWith(bName + ' ')) {
+          cleanModelName = cleanModelName.slice(scrapedData.brand.length).trim();
+        }
+      }
+
+      return res.json({
+        success: true,
+        message: `Successfully fetched phone specifications from ${scrapedData.source === 'gsmarena' ? 'GSMArena' : 'WhatMobile'}!`,
+        data: {
+          ...scrapedData,
+          name: cleanModelName,
+          shortSummary: scrapedData.shortSummary || '',
+          images: scrapedData.images || (scrapedData.image ? [scrapedData.image] : []),
+          brand_id: matchedBrand ? matchedBrand.id : null,
+          brand_name: matchedBrand ? matchedBrand.name : scrapedData.brand,
+          brand_found: !!matchedBrand
+        }
+      });
+    } catch (err) {
+      console.error('fetchExternalSpecs error:', err);
+      return res.status(400).json({
+        success: false,
+        message: err.message || 'Failed to fetch phone specifications from URL.'
+      });
+    }
+  }
+}
+
+module.exports = PhoneController;

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — PhonesDaddy</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <h2>Administration Dashboard</h2>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/phones/new" class="btn btn-primary btn-sm">+ Add Phone</a>
+        <a href="/admin/brands" class="btn btn-outline btn-sm">+ Brand</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <!-- Stats Cards -->
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Total Phones</div>
+          <div class="stat-value" id="statTotalPhones">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total Brands</div>
+          <div class="stat-value" id="statTotalBrands">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total Specs Views</div>
+          <div class="stat-value" id="statTotalViews" style="color: #0d9488;">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">News Updates</div>
+          <div class="stat-value" id="statTotalNews">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title"><a href="/admin/reviews" style="color: inherit; text-decoration: none;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments &rarr;</a></div>
+          <div class="stat-value" id="statTotalReviews" style="color: #2563eb;">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title"><a href="/admin/pages" style="color: inherit; text-decoration: none;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages &rarr;</a></div>
+          <div class="stat-value" id="statTotalPages" style="color: #0284c7; font-size: 20px;">Live</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title"><a href="/admin/settings#ad-placements" style="color: inherit; text-decoration: none;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements &rarr;</a></div>
+          <div class="stat-value" style="color: #ea580c; font-size: 20px;">9 Slots</div>
+        </div>
+      </div>
+
+      <!-- Recent Phones Card -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Recently Added Smartphones</h3>
+            <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Latest devices synchronized in MySQL</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <a href="/admin/phones/new" class="btn btn-primary btn-sm">+ Add Phone</a>
+            <a href="/admin/phones" class="btn btn-outline btn-sm">View All Phones</a>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Photo</th>
+                <th>Model Name</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recentPhonesTableBody">
+              <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">Loading recent phones...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Brands Overview Card -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Mobile Brands &amp; Manufacturers</h3>
+            <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Registered brands and active catalogs</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <a href="/admin/brands" class="btn btn-primary btn-sm">+ Manage Brands</a>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Logo</th>
+                <th>Brand Name</th>
+                <th>Slug</th>
+                <th>Models Count</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dashboardBrandsTableBody">
+              <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">Loading brands...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Latest Reviews & Comments Card with Popup Reply -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Latest Reviews &amp; Comments</h3>
+            <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">
+              Recent community feedback across smartphone specs and blog articles with 1-click reply popup
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <a href="/admin/reviews" class="btn btn-primary btn-sm">Manage All Reviews &rarr;</a>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User Details</th>
+                <th>Target Item</th>
+                <th>Type</th>
+                <th>Rating</th>
+                <th>Feedback Message Preview</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="dashboardReviewsTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: #64748b; padding: 24px;">
+                  Loading recent reviews and comments...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quick Tips -->
+      <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 20px;">
+        <h4 style="font-size: 15px; margin-bottom: 8px; color: #0f172a;">PhonesDaddy Administration Highlights</h4>
+        <p style="color: #64748b; font-size: 13px; line-height: 1.5;">
+          • Changes made in this panel immediately synchronize with the MySQL database and appear on the public Homepage, Brand pages, Search, and Compare views.<br>
+          • You can reply to any user review or comment directly from this dashboard via the popup modal.<br>
+          • Custom AdSense, Analytics, or Adsterra snippet code can be managed anytime under <a href="/admin/settings" style="color: var(--admin-primary); font-weight: 700;">⚙️ Settings</a>.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Thread & Admin Reply Modal Popup -->
+    <div id="threadModal" style="display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;" onclick="if (event.target === this) closeThreadModal();">
+      <div style="background: #ffffff; border-radius: 12px; max-width: 760px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #cbd5e1; overflow: hidden;" onclick="event.stopPropagation();">
+        
+        <!-- Modal Header -->
+        <div style="padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">
+              <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Feedback Thread &amp; Admin Reply
+            </h3>
+            <div id="modalItemSubtitle" style="font-size: 13px; color: #64748b; margin-top: 3px;">Loading...</div>
+          </div>
+          <button onclick="closeThreadModal()" style="background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div id="modalThreadBody" style="padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px;">
+          <div style="text-align: center; padding: 40px; color: #64748b;">Loading thread details...</div>
+        </div>
+
+        <!-- Modal Footer (Reply Form) -->
+        <div style="padding: 18px 24px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+          <form id="adminReplyForm" onsubmit="submitAdminReply(event)">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="font-size: 13px; font-weight: 700; color: #0f172a; margin: 0;">
+                👑 Write Official Admin Reply (PhonesDaddy Team):
+              </label>
+              <!-- Formatting toolbar -->
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <button type="button" onclick="insertAdminReplyFormat('b')" style="padding: 2px 7px; font-size: 11px; font-weight: bold; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">B</button>
+                <button type="button" onclick="insertAdminReplyFormat('i')" style="padding: 2px 7px; font-size: 11px; font-style: italic; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">I</button>
+                <button type="button" onclick="insertAdminReplyLink()" style="padding: 2px 7px; font-size: 11px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">undefined Link</button>
+                <button type="button" onclick="insertAdminReplyImage()" style="padding: 2px 7px; font-size: 11px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;">undefined Add Photo</button>
+                <input type="file" id="adminReplyImgInput" accept="image/*" style="display: none;" onchange="handleAdminReplyImageUpload(this)">
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <textarea id="adminReplyMessage" rows="2" class="form-control" placeholder="Type your response to the user here (will be published with official badge)..." required style="flex: 1; padding: 10px 12px; font-size: 13.5px; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
+              <button type="submit" id="btnSendAdminReply" class="btn btn-primary" style="white-space: nowrap; padding: 10px 18px; font-weight: 700;">
+                Send Reply &rarr;
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

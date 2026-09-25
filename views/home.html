@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{SITE_NAME}} — {{SITE_TAGLINE}}</title>
+  <meta name="description" content="{{SITE_DESCRIPTION}}">
+  <link rel="canonical" href="{{SITE_URL}}/">
+  {{SITE_FAVICON_TAG}}
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-logo" id="headerLogo">
+        {{SITE_LOGO_HTML}}
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/phones" class="nav-link">Mobiles</a></li>
+          <li><a href="/brands" class="nav-link">Brands</a></li>
+          <li><a href="/compare" class="nav-link">Compare</a></li>
+          <li><a href="/news" class="nav-link">News</a></li>
+          <li><a href="/admin/login" class="nav-link nav-login-btn"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login</a></li>
+        </ul>
+      </nav>
+
+      <!-- Search Input -->
+      <div class="header-search" id="headerSearchWrapper">
+        <span class="search-icon"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="headerSearchInput" placeholder="Search phones, brands..." autocomplete="off">
+        <div class="search-results-dropdown" id="headerSearchDropdown"></div>
+      </div>
+
+      <!-- Mobile Actions (Search Icon + Hamburger) -->
+      <div class="header-mobile-actions">
+        <button class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Toggle Search">
+          <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+          <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Flagship Showcase Slider (Unusual & Professional Showcase) -->
+  <section class="hero-slider-section" id="heroSliderSection" aria-label="Featured Mobile Flagships">
+    <div class="hero-ambient-glow"></div>
+    <div class="hero-grid-overlay"></div>
+    
+    <div class="container hero-slider-container">
+      <div class="hero-slides-wrapper" id="heroSlidesWrapper">
+        
+        <!-- Slide 1: Samsung Galaxy S26 Ultra -->
+        <article class="hero-slide active" data-index="0" style="--slide-accent: rgba(13, 148, 136, 0.5);">
+          <div class="hero-slide-grid">
+            <div class="hero-slide-content">
+              <div class="hero-spotlight-pill">
+                <span class="pulsing-beacon"></span>
+                <span>Next-Gen Flagship Spotlight</span>
+              </div>
+              <h1 class="hero-phone-heading">
+                Samsung Galaxy <span class="gradient-text">S26 Ultra</span>
+              </h1>
+              <div class="hero-meta-strip">
+                <span class="hero-price-badge">Rs. 389,999</span>
+                <span class="hero-status-pill upcoming">Upcoming • Snapdragon 8 Elite</span>
+              </div>
+              <p class="hero-desc-text">
+                Crafted in Grade 5 aerospace titanium with an intelligent 200MP Quad-Tele space zoom system, integrated ultra-low latency S-Pen, and a 6.8" 120Hz Dynamic AMOLED 2X display.
+              </p>
+              
+              <!-- Unusual Specs HUD Grid -->
+              <div class="hero-specs-hud">
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Display</div>
+                    <div class="spec-hud-val">6.8" 120Hz LTPO AMOLED</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Camera</div>
+                    <div class="spec-hud-val">200MP Quad-Tele OIS 8K</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Chipset</div>
+                    <div class="spec-hud-val">Snapdragon 8 Elite • 16GB</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"/><line x1="22" x2="22" y1="11" y2="13"/><line x1="6" x2="6" y1="11" y2="13"/><line x1="10" x2="10" y1="11" y2="13"/><line x1="14" x2="14" y1="11" y2="13"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Battery &amp; Speed</div>
+                    <div class="spec-hud-val">5,000 mAh • 65W Fast</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="hero-slide-actions">
+                <a href="/phone/samsung-galaxy-s26-ultra" class="btn-hero-primary">
+                  Explore Full Specs &rarr;
+                </a>
+                <button type="button" class="btn-hero-secondary btn-slide-compare" data-slug="samsung-galaxy-s26-ultra">
+                  + Compare
+                </button>
+              </div>
+            </div>
+
+            <!-- Right 3D Showcase Stage -->
+            <div class="hero-phone-stage">
+              <div class="phone-halo-glow"></div>
+              <div class="hero-phone-card">
+                <img src="/images/hero/galaxy-s26-ultra.jpg" alt="Samsung Galaxy S26 Ultra" class="hero-phone-img" loading="eager">
+              </div>
+              <div class="floating-callout-badge badge-top-right">
+                <span>🎯</span> 200MP Quad Zoom
+              </div>
+              <div class="floating-callout-badge badge-mid-left">
+                <span>⚡</span> 3nm Elite Core
+              </div>
+              <div class="floating-callout-badge badge-bot-right">
+                <span>🖊️</span> Titanium S-Pen
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 2: Apple iPhone 17 Pro Max -->
+        <article class="hero-slide" data-index="1" style="--slide-accent: rgba(245, 158, 11, 0.45);" aria-hidden="true">
+          <div class="hero-slide-grid">
+            <div class="hero-slide-content">
+              <div class="hero-spotlight-pill" style="color: #fbbf24;">
+                <span class="pulsing-beacon" style="background: #fbbf24; box-shadow: 0 0 10px #fbbf24;"></span>
+                <span>Pro Titanium Innovation</span>
+              </div>
+              <h2 class="hero-phone-heading">
+                Apple iPhone <span class="gradient-text" style="background: linear-gradient(135deg, #ffffff 30%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">17 Pro Max</span>
+              </h2>
+              <div class="hero-meta-strip">
+                <span class="hero-price-badge" style="color: #fbbf24;">Rs. 449,999</span>
+                <span class="hero-status-pill upcoming">Upcoming • Apple A20 Pro 2nm</span>
+              </div>
+              <p class="hero-desc-text">
+                Engineered with next-generation 2nm Apple A20 Pro silicon, 48MP Triple Fusion camera with 5x optical tetraprism, and the edge-to-edge Ceramic Shield 2 display.
+              </p>
+              
+              <!-- Specs HUD Grid -->
+              <div class="hero-specs-hud">
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Display</div>
+                    <div class="spec-hud-val">6.9" 120Hz ProMotion XDR</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Camera</div>
+                    <div class="spec-hud-val">Triple 48MP • 5x Tetraprism</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Chipset</div>
+                    <div class="spec-hud-val">Apple A20 Pro (2nm)</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"/><line x1="22" x2="22" y1="11" y2="13"/><line x1="6" x2="6" y1="11" y2="13"/><line x1="10" x2="10" y1="11" y2="13"/><line x1="14" x2="14" y1="11" y2="13"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Battery &amp; Speed</div>
+                    <div class="spec-hud-val">4,850 mAh • All-Day Battery</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="hero-slide-actions">
+                <a href="/phone/apple-iphone-17-pro-max" class="btn-hero-primary" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%); box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);">
+                  Explore Full Specs &rarr;
+                </a>
+                <button type="button" class="btn-hero-secondary btn-slide-compare" data-slug="apple-iphone-17-pro-max">
+                  + Compare
+                </button>
+              </div>
+            </div>
+
+            <!-- Right 3D Showcase Stage -->
+            <div class="hero-phone-stage">
+              <div class="phone-halo-glow"></div>
+              <div class="hero-phone-card">
+                <img src="/images/hero/iphone-17-pro.jpg" alt="Apple iPhone 17 Pro Max" class="hero-phone-img" loading="lazy">
+              </div>
+              <div class="floating-callout-badge badge-top-right">
+                <span>🚀</span> A20 Pro 2nm
+              </div>
+              <div class="floating-callout-badge badge-mid-left">
+                <span>📸</span> 48MP Triple Fusion
+              </div>
+              <div class="floating-callout-badge badge-bot-right">
+                <span>🏝️</span> Dynamic Island 2.0
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 3: Titanium Flagship Performance Edition -->
+        <article class="hero-slide" data-index="2" style="--slide-accent: rgba(16, 185, 129, 0.45);" aria-hidden="true">
+          <div class="hero-slide-grid">
+            <div class="hero-slide-content">
+              <div class="hero-spotlight-pill" style="color: #34d399;">
+                <span class="pulsing-beacon" style="background: #34d399; box-shadow: 0 0 10px #34d399;"></span>
+                <span>HyperCharge Velocity</span>
+              </div>
+              <h2 class="hero-phone-heading">
+                OnePlus <span class="gradient-text" style="background: linear-gradient(135deg, #ffffff 30%, #34d399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">13 Flagship</span>
+              </h2>
+              <div class="hero-meta-strip">
+                <span class="hero-price-badge" style="color: #34d399;">Rs. 249,999</span>
+                <span class="hero-status-pill">Available • 100W SuperVOOC</span>
+              </div>
+              <p class="hero-desc-text">
+                Boasting a 6,000 mAh Glacier battery with 100W flash charging, 24GB LPDDR5X RAM, Hasselblad master portrait optics, and a 4,500-nit 2K 144Hz LTPO display.
+              </p>
+              
+              <!-- Specs HUD Grid -->
+              <div class="hero-specs-hud">
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Display</div>
+                    <div class="spec-hud-val">6.82" 2K 144Hz 4500 nits</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Camera</div>
+                    <div class="spec-hud-val">50MP Sony LYT-808 OIS</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Chipset</div>
+                    <div class="spec-hud-val">Snapdragon 8 Elite • 24GB</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"/><line x1="22" x2="22" y1="11" y2="13"/><line x1="6" x2="6" y1="11" y2="13"/><line x1="10" x2="10" y1="11" y2="13"/><line x1="14" x2="14" y1="11" y2="13"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Battery &amp; Speed</div>
+                    <div class="spec-hud-val">6,000 mAh • 100W Flash</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="hero-slide-actions">
+                <a href="/phone/oneplus-13" class="btn-hero-primary" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);">
+                  Explore Full Specs &rarr;
+                </a>
+                <button type="button" class="btn-hero-secondary btn-slide-compare" data-slug="oneplus-13">
+                  + Compare
+                </button>
+              </div>
+            </div>
+
+            <!-- Right 3D Showcase Stage -->
+            <div class="hero-phone-stage">
+              <div class="phone-halo-glow"></div>
+              <div class="hero-phone-card">
+                <img src="/images/hero/flagship-titanium.jpg" alt="OnePlus 13 Flagship" class="hero-phone-img" loading="lazy">
+              </div>
+              <div class="floating-callout-badge badge-top-right">
+                <span>⚡</span> 100W SuperVOOC
+              </div>
+              <div class="floating-callout-badge badge-mid-left">
+                <span>🔋</span> 6,000 mAh Glacier
+              </div>
+              <div class="floating-callout-badge badge-bot-right">
+                <span>📷</span> Hasselblad Optics
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 4: Xiaomi 15 Ultra -->
+        <article class="hero-slide" data-index="3" style="--slide-accent: rgba(249, 115, 22, 0.45);" aria-hidden="true">
+          <div class="hero-slide-grid">
+            <div class="hero-slide-content">
+              <div class="hero-spotlight-pill" style="color: #fb923c;">
+                <span class="pulsing-beacon" style="background: #fb923c; box-shadow: 0 0 10px #fb923c;"></span>
+                <span>Leica Photography Benchmark</span>
+              </div>
+              <h2 class="hero-phone-heading">
+                Xiaomi <span class="gradient-text" style="background: linear-gradient(135deg, #ffffff 30%, #fb923c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">15 Ultra</span>
+              </h2>
+              <div class="hero-meta-strip">
+                <span class="hero-price-badge" style="color: #fb923c;">Rs. 319,999</span>
+                <span class="hero-status-pill">Available • 200MP Leica Quad</span>
+              </div>
+              <p class="hero-desc-text">
+                Pioneering mobile optics with Leica Summilux quad camera, 200MP periscope zoom sensor, Snapdragon 8 Elite, and a custom micro-curved 2K 120Hz display.
+              </p>
+              
+              <!-- Specs HUD Grid -->
+              <div class="hero-specs-hud">
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Display</div>
+                    <div class="spec-hud-val">6.73" 2K 120Hz AMOLED</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Camera</div>
+                    <div class="spec-hud-val">Leica Quad 200MP + 50MP</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Chipset</div>
+                    <div class="spec-hud-val">Snapdragon 8 Elite • 16GB</div>
+                  </div>
+                </div>
+
+                <div class="spec-hud-card">
+                  <div class="spec-hud-icon" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"/><line x1="22" x2="22" y1="11" y2="13"/><line x1="6" x2="6" y1="11" y2="13"/><line x1="10" x2="10" y1="11" y2="13"/><line x1="14" x2="14" y1="11" y2="13"/></svg>
+                  </div>
+                  <div class="spec-hud-info">
+                    <div class="spec-hud-label">Battery &amp; Speed</div>
+                    <div class="spec-hud-val">6,000 mAh • 90W HyperCharge</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="hero-slide-actions">
+                <a href="/phone/xiaomi-15-ultra" class="btn-hero-primary" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); box-shadow: 0 8px 24px rgba(234, 88, 12, 0.4);">
+                  Explore Full Specs &rarr;
+                </a>
+                <button type="button" class="btn-hero-secondary btn-slide-compare" data-slug="xiaomi-15-ultra">
+                  + Compare
+                </button>
+              </div>
+            </div>
+
+            <!-- Right 3D Showcase Stage -->
+            <div class="hero-phone-stage">
+              <div class="phone-halo-glow"></div>
+              <div class="hero-phone-card">
+                <img src="/images/phones/xiaomi-15-ultra.svg" alt="Xiaomi 15 Ultra" class="hero-phone-img" loading="lazy">
+              </div>
+              <div class="floating-callout-badge badge-top-right">
+                <span>🔴</span> Leica 200MP Zoom
+              </div>
+              <div class="floating-callout-badge badge-mid-left">
+                <span>🔋</span> 6,000 mAh Si-Carbon
+              </div>
+              <div class="floating-callout-badge badge-bot-right">
+                <span>🌟</span> 2K Dolby Display
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Slider Bottom Navigation Bar & Interactive Tabs -->
+      <div class="hero-slider-bottom-bar">
+        <div class="hero-slider-tabs" role="tablist" aria-label="Flagship Slider Navigation">
+          
+          <button class="hero-slider-tab active" role="tab" aria-selected="true" data-slide="0">
+            <div class="hero-tab-index">01 • SAMSUNG</div>
+            <div class="hero-tab-title">Galaxy S26 Ultra</div>
+            <div class="hero-tab-progress-wrap">
+              <div class="hero-tab-progress"></div>
+            </div>
+          </button>
+
+          <button class="hero-slider-tab" role="tab" aria-selected="false" data-slide="1">
+            <div class="hero-tab-index">02 • APPLE</div>
+            <div class="hero-tab-title">iPhone 17 Pro Max</div>
+            <div class="hero-tab-progress-wrap">
+              <div class="hero-tab-progress"></div>
+            </div>
+          </button>
+
+          <button class="hero-slider-tab" role="tab" aria-selected="false" data-slide="2">
+            <div class="hero-tab-index">03 • ONEPLUS</div>
+            <div class="hero-tab-title">OnePlus 13 5G</div>
+            <div class="hero-tab-progress-wrap">
+              <div class="hero-tab-progress"></div>
+            </div>
+          </button>
+
+          <button class="hero-slider-tab" role="tab" aria-selected="false" data-slide="3">
+            <div class="hero-tab-index">04 • XIAOMI</div>
+            <div class="hero-tab-title">Xiaomi 15 Ultra</div>
+            <div class="hero-tab-progress-wrap">
+              <div class="hero-tab-progress"></div>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Slider Arrows -->
+        <div class="hero-slider-arrows">
+          <button class="slider-arrow-btn" id="heroPrevBtn" aria-label="Previous Slide">
+            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="slider-arrow-btn" id="heroNextBtn" aria-label="Next Slide">
+            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Brands Strip -->
+  <div class="brands-strip">
+    <div class="container">
+      <div class="brands-scroll" id="homeBrandsStrip">
+        <!-- Populated dynamically via JS -->
+        <a href="/brand/samsung" class="brand-pill">Samsung</a>
+        <a href="/brand/apple" class="brand-pill">Apple</a>
+        <a href="/brand/xiaomi" class="brand-pill">Xiaomi</a>
+        <a href="/brand/vivo" class="brand-pill">Vivo</a>
+        <a href="/brand/oppo" class="brand-pill">Oppo</a>
+        <a href="/brand/oneplus" class="brand-pill">OnePlus</a>
+        <a href="/brand/google" class="brand-pill">Google</a>
+        <a href="/brand/realme" class="brand-pill">Realme</a>
+        <a href="/brand/tecno" class="brand-pill">Tecno</a>
+        <a href="/brand/infinix" class="brand-pill">Infinix</a>
+        <a href="/brand/motorola" class="brand-pill">Motorola</a>
+        <a href="/brand/honor" class="brand-pill">Honor</a>
+        <a href="/brands" class="brand-pill" style="background: var(--primary-light); color: var(--primary);">All Brands &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    
+    <!-- Latest Mobiles -->
+    <section class="section" style="padding-top: 0;">
+      <div class="section-header">
+        <h2 class="section-title">Latest Mobiles</h2>
+        <a href="/phones?sort=newest" class="view-all-link">View all latest phones &rarr;</a>
+      </div>
+      <div class="phones-grid" id="latestPhonesGrid">
+        <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 24px;">Loading latest mobiles...</div>
+      </div>
+    </section>
+
+    <!-- Popular Mobiles -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Popular Mobiles</h2>
+        <a href="/phones?sort=popular" class="view-all-link">View all popular &rarr;</a>
+      </div>
+      <div class="phones-grid" id="popularPhonesGrid">
+        <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 24px;">Loading popular mobiles...</div>
+      </div>
+    </section>
+
+    <!-- Quick Phone Comparison Section -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Compare Phones</h2>
+        <a href="/compare" class="view-all-link">Open comparison tool &rarr;</a>
+      </div>
+
+      <div class="compare-widget-box">
+        <h3 style="font-size: 1.2rem; color: #0f172a; margin-bottom: 6px;">Compare Any Two Smartphones Side-by-Side</h3>
+        <p style="color: #64748b; font-size: 14px;">Select two smartphones to compare display, camera megapixels, chipset performance, battery life, and prices.</p>
+
+        <div class="compare-inputs-grid">
+          <div class="compare-select-wrap">
+            <label style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px;">First Phone</label>
+            <select id="quickComparePhone1" class="form-control" style="width: 100%; height: 44px; font-weight: 600;">
+              <option value="">Select first phone...</option>
+            </select>
+          </div>
+
+          <div class="compare-vs-badge">VS</div>
+
+          <div class="compare-select-wrap">
+            <label style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px;">Second Phone</label>
+            <select id="quickComparePhone2" class="form-control" style="width: 100%; height: 44px; font-weight: 600;">
+              <option value="">Select second phone...</option>
+            </select>
+          </div>
+
+          <div>
+            <button id="btnLaunchQuickCompare" class="btn btn-primary" style="height: 44px; margin-top: 20px; padding: 0 24px;">Compare Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upcoming Mobiles -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Upcoming Mobiles</h2>
+        <a href="/phones?status=Upcoming" class="view-all-link">View upcoming &rarr;</a>
+      </div>
+      <div class="phones-grid" id="upcomingPhonesGrid">
+        <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 24px;">Loading upcoming mobiles...</div>
+      </div>
+    </section>
+
+    <!-- Popular Brands Section -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Popular Brands</h2>
+        <a href="/brands" class="view-all-link">View all brands &rarr;</a>
+      </div>
+      <div class="brands-grid" id="homeBrandsGrid">
+        <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 24px;">Loading brands...</div>
+      </div>
+    </section>
+
+    <!-- Hot News & Tech Updates Section -->
+    <section class="section" id="newsSection">
+      <div class="section-header">
+        <h2 class="section-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Hot News &amp; Mobile Tech Blog</h2>
+        <a href="/news" class="view-all-link">View all news &amp; leaks &rarr;</a>
+      </div>
+      <div id="homeHotNewsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="text-align: center; color: #64748b; padding: 24px; grid-column: 1/-1;">Loading trending mobile news...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="color: #fff; margin-bottom: 14px;">
+            {{SITE_FOOTER_LOGO_HTML}}
+          </div>
+          <p style="font-size: 14px; line-height: 1.6;">
+            {{FOOTER_ABOUT}}
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="/phones">Latest Mobiles</a></li>
+            <li><a href="/phones?status=Upcoming">Upcoming Mobiles</a></li>
+            <li><a href="/compare">Phone Comparison</a></li>
+            <li><a href="/brands">All Brands</a></li>
+            <li><a href="/news">Tech News &amp; Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Top Brands</h4>
+          <ul class="footer-links">
+            <li><a href="/brand/samsung">Samsung Mobiles</a></li>
+            <li><a href="/brand/apple">Apple iPhones</a></li>
+            <li><a href="/brand/xiaomi">Xiaomi Mobiles</a></li>
+            <li><a href="/brand/vivo">Vivo Mobiles</a></li>
+            <li><a href="/brand/oppo">Oppo Mobiles</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company &amp; Legal</h4>
+          <ul class="footer-links" id="dynamicFooterPages">
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>System</h4>
+          <ul class="footer-links">
+            <li><a href="/sitemap.xml">XML Sitemap</a></li>
+            <li><a href="/robots.txt">Robots.txt</a></li>
+            <li><a href="/admin">Admin Portal</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        {{FOOTER_COPYRIGHT}}
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/icons.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/hero-slider.js"></script>
+  <script>
+    // Home-specific data loading
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Load Latest Phones (up to 16 to fill 8-card rows)
+      try {
+        const res = await fetch('/api/phones/latest?limit=16');
+        const json = await res.json();
+        if (json.success && json.data) {
+          document.getElementById('latestPhonesGrid').innerHTML = json.data.map(p => renderHomeCard(p)).join('');
+        }
+      } catch (e) { console.error(e); }
+
+      // 2. Load Popular Phones
+      try {
+        const res = await fetch('/api/phones/popular?limit=16');
+        const json = await res.json();
+        if (json.success && json.data) {
+          document.getElementById('popularPhonesGrid').innerHTML = json.data.map(p => renderHomeCard(p)).join('');
+        }
+      } catch (e) { console.error(e); }
+
+      // 3. Load Upcoming Phones
+      try {
+        const res = await fetch('/api/phones/upcoming?limit=16');
+        const json = await res.json();
+        if (json.success && json.data) {
+          document.getElementById('upcomingPhonesGrid').innerHTML = json.data.map(p => renderHomeCard(p)).join('');
+        }
+      } catch (e) { console.error(e); }
+
+      // 4. Load Popular Brands Grid
+      try {
+        const res = await fetch('/api/brands?active=true');
+        const json = await res.json();
+        if (json.success && json.data) {
+          const topBrands = json.data.slice(0, 12);
+          document.getElementById('homeBrandsGrid').innerHTML = topBrands.map(b => `
+            <a href="/brand/${b.slug}" class="brand-card">
+              <img src="${b.logo || '/images/placeholder.svg'}" alt="${b.name}" class="brand-card-logo">
+              <div class="brand-card-name">${b.name}</div>
+              <div class="brand-card-count">${b.phone_count} phones</div>
+            </a>
+          `).join('');
+
+          // Populate Quick Compare Dropdowns
+          const p1Select = document.getElementById('quickComparePhone1');
+          const p2Select = document.getElementById('quickComparePhone2');
+          
+          // Fetch phone list for compare dropdowns
+          const phonesRes = await fetch('/api/phones?limit=50');
+          const phonesJson = await phonesRes.json();
+          if (phonesJson.success && phonesJson.data) {
+            const options = phonesJson.data.map(p => `<option value="${p.slug}">${p.name}</option>`).join('');
+            p1Select.innerHTML += options;
+            p2Select.innerHTML += options;
+
+            if (phonesJson.data.length >= 2) {
+              p1Select.value = phonesJson.data[0].slug;
+              p2Select.value = phonesJson.data[1].slug;
+            }
+          }
+        }
+      } catch (e) { console.error(e); }
+
+      // 5. Load Hot News & Blog Posts
+      try {
+        const newsRes = await fetch('/api/news/hot?limit=4');
+        const newsJson = await newsRes.json();
+        const newsGrid = document.getElementById('homeHotNewsGrid');
+        if (newsJson.success && newsJson.data && newsJson.data.length > 0 && newsGrid) {
+          newsGrid.innerHTML = newsJson.data.map(a => {
+            const thumb = a.image || '/images/placeholder.svg';
+            const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+            return `
+              <article class="news-card" style="box-shadow: var(--shadow-sm); border-radius: 8px;">
+                <a href="/news/${a.slug}" class="news-card-thumb-wrap" style="height: 160px;">
+                  <img src="${thumb}" alt="${a.title}" class="news-card-thumb" loading="lazy">
+                  <span class="news-card-badge">${a.category || 'Hot News'}</span>
+                  ${a.is_hot ? '<span class="news-card-hot"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> HOT</span>' : ''}
+                </a>
+                <div class="news-card-body" style="padding: 16px;">
+                  <div class="news-card-meta" style="font-size: 11px; margin-bottom: 6px;">
+                    <span>${ICONS.calendar} ${dateStr}</span>
+                    <span>•</span>
+                    <span>${ICONS.penLine} ${a.author || 'Editorial'}</span>
+                  </div>
+                  <h3 class="news-card-title" style="font-size: 15px; margin-bottom: 6px;">
+                    <a href="/news/${a.slug}">${a.title}</a>
+                  </h3>
+                  <p class="news-card-excerpt" style="font-size: 12.5px; margin-bottom: 10px;">
+                    ${a.summary || ''}
+                  </p>
+                  <div class="news-card-footer" style="padding-top: 8px;">
+                    <a href="/news/${a.slug}" style="text-decoration: none; color: var(--primary);">Read Story &rarr;</a>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('');
+        } else if (newsGrid) {
+          newsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 24px;">No hot stories published yet. Stay tuned!</div>`;
+        }
+      } catch (e) { console.error('Error loading hot news on homepage:', e); }
+
+      // Launch Quick Compare Button
+      document.getElementById('btnLaunchQuickCompare').addEventListener('click', () => {
+        const p1 = document.getElementById('quickComparePhone1').value;
+        const p2 = document.getElementById('quickComparePhone2').value;
+        if (!p1 || !p2) {
+          alert('Please select two phones to compare.');
+          return;
+        }
+        if (p1 === p2) {
+          alert('Please select two different phones to compare.');
+          return;
+        }
+        window.location.href = `/compare?phones=${p1},${p2}`;
+      });
+    });
+
+    function renderHomeCard(phone) {
+      return `
+        <div class="phone-card" onclick="window.location.href='/phone/${phone.slug}'">
+          <div class="phone-card-image-wrap">
+            <span class="phone-card-brand-badge">${escapeHtml(phone.brand_name || '')}</span>
+            <a href="/phone/${phone.slug}" onclick="event.stopPropagation()">
+              <img src="${phone.image || '/images/placeholder.svg'}" alt="${escapeHtml(phone.name)}" class="phone-card-image" loading="lazy">
+            </a>
+          </div>
+          <div class="phone-card-body">
+            <a href="/phone/${phone.slug}" onclick="event.stopPropagation()">
+              <h3 class="phone-card-title" title="${escapeHtml(phone.name)}">${escapeHtml(phone.name)}</h3>
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleQuickCompare(slug) {
+      CompareBasket.add(slug);
+      const list = CompareBasket.get();
+      if (list.length >= 2) {
+        window.location.href = `/compare?phones=${list.join(',')}`;
+      } else {
+        alert('Added to compare! Select 1 more phone to compare.');
+      }
+    }
+  </script>
+</body>
+</html>

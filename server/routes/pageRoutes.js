@@ -1,0 +1,17 @@
+const express = require('express');
+const router = express.Router();
+const PageController = require('../controllers/pageController');
+const { requireAdminAuth } = require('../middleware/auth');
+
+// Public endpoints
+router.get('/footer', PageController.getFooterPages);
+router.get('/slug/:slug', PageController.getBySlug);
+
+// Admin endpoints (Protected)
+router.get('/admin/list', requireAdminAuth, PageController.adminList);
+router.get('/admin/:id', requireAdminAuth, PageController.adminGetById);
+router.post('/admin', requireAdminAuth, PageController.create);
+router.put('/admin/:id', requireAdminAuth, PageController.update);
+router.delete('/admin/:id', requireAdminAuth, PageController.delete);
+
+module.exports = router;

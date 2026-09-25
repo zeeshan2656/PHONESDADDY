@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — PhonesDaddy</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body style="margin: 0;">
+
+  <div class="admin-login-wrapper">
+    <div class="admin-login-card">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="brand-icon" style="margin: 0 auto 10px; width: 44px; height: 44px; font-size: 24px;">P</div>
+        <div class="admin-login-title">Phones<span style="color: #0d9488;">Daddy</span></div>
+        <div class="admin-login-subtitle">Management Administration Portal</div>
+      </div>
+
+      <div id="loginAlert"
+        style="display: none; padding: 10px 14px; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; border-radius: 4px; font-size: 13px; margin-bottom: 16px;">
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label class="form-label" for="adminUsername">Username</label>
+          <input type="text" id="adminUsername" name="username" class="form-control" placeholder="Enter admin username"
+            required autocomplete="username">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label" for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter password"
+            required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="height: 44px; font-size: 15px;">Sign In to
+          Dashboard</button>
+      </form>
+
+      <div style="margin-top: 24px; text-align: center; font-size: 12px; color: #94a3b8;">
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+
+</html>

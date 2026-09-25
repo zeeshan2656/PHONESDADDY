@@ -1,0 +1,590 @@
+const { pool } = require('../config/database');
+
+class PhoneModel {
+  /**
+   * Get list of phones with filters, pagination, and sorting
+   */
+  static async getPhones({
+    page = 1,
+    limit = 24,
+    brand = null,
+    minPrice = null,
+    maxPrice = null,
+    ram = null,
+    storage = null,
+    is5G = null,
+    sort = 'newest',
+    featured = null,
+    popular = null,
+    status = null,
+    search = null
+  } = {}) {
+    const offset = (Math.max(1, parseInt(page, 10)) - 1) * parseInt(limit, 10);
+    const parsedLimit = parseInt(limit, 10);
+
+    const conditions = [];
+    const params = [];
+
+    if (brand) {
+      if (Array.isArray(brand)) {
+        conditions.push(`b.slug IN (${brand.map(() => '?').join(',')})`);
+        params.push(...brand);
+      } else {
+        conditions.push(`(b.slug = ? OR b.id = ?)`);
+        params.push(brand, brand);
+      }
+    }
+
+    if (minPrice !== null && minPrice !== undefined && minPrice !== '') {
+      conditions.push(`p.price >= ?`);
+      params.push(parseFloat(minPrice));
+    }
+
+    if (maxPrice !== null && maxPrice !== undefined && maxPrice !== '') {
+      conditions.push(`p.price <= ?`);
+      params.push(parseFloat(maxPrice));
+    }
+
+    if (featured !== null && featured !== undefined && featured !== '') {
+      conditions.push(`p.featured = ?`);
+      params.push(featured ? 1 : 0);
+    }
+
+    if (popular !== null && popular !== undefined && popular !== '') {
+      conditions.push(`p.popular = ?`);
+      params.push(popular ? 1 : 0);
+    }
+
+    if (status) {
+      conditions.push(`p.status = ?`);
+      params.push(status);
+    }
+
+    if (search) {
+      conditions.push(`(p.name LIKE ? OR b.name LIKE ? OR p.short_description LIKE ?)`);
+      const searchWild = `%${search}%`;
+      params.push(searchWild, searchWild, searchWild);
+    }
+
+    // Filter by RAM using phone_specs
+    if (ram) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM phone_specs ps 
+        WHERE ps.phone_id = p.id AND ps.section = 'Memory' AND ps.spec_key = 'RAM' AND ps.spec_value LIKE ?
+      )`);
+      params.push(`%${ram}%`);
+    }
+
+    // Filter by Storage using phone_specs
+    if (storage) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM phone_specs ps 
+        WHERE ps.phone_id = p.id AND ps.section = 'Memory' AND ps.spec_key = 'Internal Storage' AND ps.spec_value LIKE ?
+      )`);
+      params.push(`%${storage}%`);
+    }
+
+    // Filter by 5G
+    if (is5G === 'true' || is5G === true || is5G === 1 || is5G === '1') {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM phone_specs ps 
+        WHERE ps.phone_id = p.id AND ps.section = 'Network' AND (ps.spec_key = '5G' OR ps.spec_key = 'Technology') AND ps.spec_value LIKE '%5G%'
+      )`);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    // Sorting
+    let orderBy = 'ORDER BY p.id DESC';
+    if (sort === 'newest') orderBy = 'ORDER BY p.id DESC';
+    else if (sort === 'price_asc') orderBy = 'ORDER BY p.price ASC';
+    else if (sort === 'price_desc') orderBy = 'ORDER BY p.price DESC';
+    else if (sort === 'popular') orderBy = 'ORDER BY p.popular DESC, p.views DESC';
+    else if (sort === 'views') orderBy = 'ORDER BY p.views DESC';
+    else if (sort === 'name') orderBy = 'ORDER BY p.name ASC';
+
+    // Count total matching
+    const countSql = `
+      SELECT COUNT(DISTINCT p.id) as total
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      ${whereClause}
+    `;
+    const [countRows] = await pool.query(countSql, params);
+    const total = countRows[0].total;
+
+    // Fetch phones
+    const querySql = `
+      SELECT 
+        p.id, p.name, p.slug, p.short_description, p.image, p.release_date, 
+        p.status, p.price, p.featured, p.popular, p.views, p.created_at,
+        b.id AS brand_id, b.name AS brand_name, b.slug AS brand_slug,
+        (SELECT COUNT(*) FROM reviews_comments ur WHERE ur.entity_type = 'phone' AND ur.entity_id = p.id AND ur.status = 'approved') AS review_count
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      ${whereClause}
+      ${orderBy}
+      LIMIT ? OFFSET ?
+    `;
+
+    const [phoneRows] = await pool.query(querySql, [...params, parsedLimit, offset]);
+
+    // Fetch quick specs for each phone (Display, Camera, Battery, RAM)
+    if (phoneRows.length > 0) {
+      const phoneIds = phoneRows.map(p => p.id);
+      const [specRows] = await pool.query(`
+        SELECT phone_id, section, spec_key, spec_value
+        FROM phone_specs
+        WHERE phone_id IN (${phoneIds.map(() => '?').join(',')})
+          AND (
+            (section = 'Display' AND spec_key = 'Size') OR
+            (section = 'Display' AND spec_key = 'Type') OR
+            (section = 'Main Camera' AND spec_key IN ('Main sensor', 'Camera configuration')) OR
+            (section = 'Battery' AND spec_key = 'Capacity') OR
+            (section = 'Memory' AND spec_key = 'RAM')
+          )
+      `, phoneIds);
+
+      // Map quick specs onto each phone
+      const specsMap = {};
+      for (const row of specRows) {
+        if (!specsMap[row.phone_id]) specsMap[row.phone_id] = {};
+        if (row.section === 'Display' && row.spec_key === 'Size') {
+          // Extract display size (e.g. "6.8 inches")
+          specsMap[row.phone_id].display = row.spec_value.split(',')[0].trim();
+        } else if (row.section === 'Main Camera' && (row.spec_key === 'Main sensor' || row.spec_key === 'Camera configuration')) {
+          if (!specsMap[row.phone_id].camera) {
+            // Find MP in string (e.g. "200 MP" or "200MP")
+            const mpMatch = row.spec_value.match(/\d+\s*MP/i);
+            specsMap[row.phone_id].camera = mpMatch ? mpMatch[0] + ' Camera' : row.spec_value.split(',')[0];
+          }
+        } else if (row.section === 'Battery' && row.spec_key === 'Capacity') {
+          const batMatch = row.spec_value.match(/\d+\s*mAh/i);
+          specsMap[row.phone_id].battery = batMatch ? batMatch[0] + ' Battery' : row.spec_value;
+        } else if (row.section === 'Memory' && row.spec_key === 'RAM') {
+          const ramMatch = row.spec_value.match(/\d+GB/i);
+          specsMap[row.phone_id].ram = ramMatch ? ramMatch[0] + ' RAM' : row.spec_value;
+        }
+      }
+
+      for (const phone of phoneRows) {
+        phone.quick_specs = specsMap[phone.id] || {};
+      }
+    }
+
+    return {
+      phones: phoneRows,
+      pagination: {
+        total,
+        page: parseInt(page, 10),
+        limit: parsedLimit,
+        totalPages: Math.ceil(total / parsedLimit)
+      }
+    };
+  }
+
+  /**
+   * Get complete phone details by slug
+   */
+  static async getPhoneBySlug(slug) {
+    const [rows] = await pool.query(`
+      SELECT 
+        p.*,
+        b.name AS brand_name,
+        b.slug AS brand_slug,
+        b.logo AS brand_logo,
+        (SELECT COUNT(*) FROM reviews_comments ur WHERE ur.entity_type = 'phone' AND ur.entity_id = p.id AND ur.status = 'approved') AS review_count
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      WHERE p.slug = ?
+    `, [slug]);
+
+    if (rows.length === 0) return null;
+    const phone = rows[0];
+
+    // Fetch specs grouped by section
+    const [specRows] = await pool.query(`
+      SELECT section, spec_key, spec_value, sort_order
+      FROM phone_specs
+      WHERE phone_id = ?
+      ORDER BY section, sort_order ASC, id ASC
+    `, [phone.id]);
+
+    const specsBySection = {};
+    for (const spec of specRows) {
+      if (!specsBySection[spec.section]) {
+        specsBySection[spec.section] = [];
+      }
+      specsBySection[spec.section].push({
+        key: spec.spec_key,
+        value: spec.spec_value
+      });
+    }
+    phone.specs = specsBySection;
+
+    // Fetch prices
+    const [priceRows] = await pool.query(`
+      SELECT country, currency, amount
+      FROM phone_prices
+      WHERE phone_id = ?
+      ORDER BY id ASC
+    `, [phone.id]);
+    phone.prices = priceRows;
+
+    // Parse images JSON
+    if (phone.images) {
+      try {
+        phone.images = typeof phone.images === 'string' ? JSON.parse(phone.images) : phone.images;
+      } catch (_) {
+        // Fallback: treat as comma-separated list
+        phone.images = String(phone.images).split(',').map(s => s.trim()).filter(Boolean);
+      }
+    } else {
+      phone.images = phone.image ? [phone.image] : [];
+    }
+
+    // 1. Fetch related phones (up to 6 devices from same brand or similar)
+    try {
+      const [relatedRows] = await pool.query(`
+        SELECT id, name, slug, image, price, release_date, status
+        FROM phones
+        WHERE brand_id = ? AND id != ?
+        ORDER BY id DESC
+        LIMIT 6
+      `, [phone.brand_id, phone.id]);
+      phone.related_phones = relatedRows;
+    } catch (_) {
+      phone.related_phones = [];
+    }
+
+    // 2. Fetch popular phones from same brand (GSMArena "POPULAR FROM [BRAND]")
+    try {
+      const [popularRows] = await pool.query(`
+        SELECT id, name, slug, image, price, release_date, status
+        FROM phones
+        WHERE brand_id = ? AND id != ?
+        ORDER BY popular DESC, views DESC, id DESC
+        LIMIT 6
+      `, [phone.brand_id, phone.id]);
+      phone.popular_brand_phones = popularRows;
+    } catch (_) {
+      phone.popular_brand_phones = [];
+    }
+
+    // 3. Fetch related news articles mentioning brand or phone (GSMArena "[PHONE] IN THE NEWS")
+    try {
+      const brandName = phone.brand_name || '';
+      const phoneName = phone.name || '';
+      const [newsRows] = await pool.query(`
+        SELECT id, title, slug, image, created_at
+        FROM news
+        WHERE status = 'published'
+          AND (title LIKE ? OR title LIKE ? OR summary LIKE ?)
+        ORDER BY created_at DESC
+        LIMIT 4
+      `, [`%${phoneName}%`, `%${brandName}%`, `%${brandName}%`]);
+
+      if (newsRows.length < 4) {
+        const existingIds = newsRows.map(n => n.id);
+        const limitMore = 4 - newsRows.length;
+        const excludeClause = existingIds.length > 0 ? `AND id NOT IN (${existingIds.map(() => '?').join(',')})` : '';
+        const [moreNews] = await pool.query(`
+          SELECT id, title, slug, image, created_at
+          FROM news
+          WHERE status = 'published' ${excludeClause}
+          ORDER BY is_hot DESC, created_at DESC
+          LIMIT ?
+        `, [...existingIds, limitMore]);
+        newsRows.push(...moreNews);
+      }
+      phone.related_news = newsRows;
+    } catch (_) {
+      phone.related_news = [];
+    }
+
+    return phone;
+  }
+
+  /**
+   * Get phone by ID (for admin editing)
+   */
+  static async getPhoneById(id) {
+    const [rows] = await pool.query(`
+      SELECT p.*, b.name as brand_name, b.slug as brand_slug,
+        (SELECT COUNT(*) FROM reviews_comments ur WHERE ur.entity_type = 'phone' AND ur.entity_id = p.id AND ur.status = 'approved') AS review_count
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      WHERE p.id = ?
+    `, [id]);
+
+    if (rows.length === 0) return null;
+    const phone = rows[0];
+
+    const [specRows] = await pool.query(`
+      SELECT section, spec_key, spec_value, sort_order
+      FROM phone_specs
+      WHERE phone_id = ?
+      ORDER BY sort_order ASC, id ASC
+    `, [id]);
+    phone.raw_specs = specRows;
+
+    const [priceRows] = await pool.query(`
+      SELECT country, currency, amount
+      FROM phone_prices
+      WHERE phone_id = ?
+    `, [id]);
+    phone.prices = priceRows;
+
+    // Parse images JSON
+    if (phone.images) {
+      try {
+        phone.images = typeof phone.images === 'string' ? JSON.parse(phone.images) : phone.images;
+      } catch (_) {
+        phone.images = String(phone.images).split(',').map(s => s.trim()).filter(Boolean);
+      }
+    } else {
+      phone.images = phone.image ? [phone.image] : [];
+    }
+
+    return phone;
+  }
+
+  /**
+   * Increment view counter
+   */
+  static async incrementViews(id) {
+    await pool.query(`UPDATE phones SET views = views + 1 WHERE id = ?`, [id]);
+  }
+
+  /**
+   * Create phone with specs and prices in a single transaction
+   */
+  static async createPhone(phoneData, specs = [], prices = []) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      const [res] = await connection.query(`
+        INSERT INTO phones (
+          brand_id, name, slug, short_description, image, images, release_date,
+          status, price, featured, popular, views, meta_title, meta_description
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        phoneData.brand_id,
+        phoneData.name,
+        phoneData.slug,
+        phoneData.short_description || '',
+        phoneData.image || '',
+        phoneData.images ? JSON.stringify(phoneData.images) : null,
+        phoneData.release_date || '',
+        phoneData.status || 'Available',
+        phoneData.price || 0,
+        phoneData.featured ? 1 : 0,
+        phoneData.popular ? 1 : 0,
+        0,
+        phoneData.meta_title || `${phoneData.name} Price in Pakistan & Specifications | PhonesDaddy`,
+        phoneData.meta_description || `${phoneData.name} specifications, price in Pakistan, camera, battery, and details.`
+      ]);
+
+      const phoneId = res.insertId;
+
+      // Insert specs
+      if (Array.isArray(specs) && specs.length > 0) {
+        let order = 1;
+        for (const s of specs) {
+          if (s.section && s.key && s.value) {
+            await connection.query(`
+              INSERT INTO phone_specs (phone_id, section, spec_key, spec_value, sort_order)
+              VALUES (?, ?, ?, ?, ?)
+            `, [phoneId, s.section, s.key, s.value, s.sort_order || order++]);
+          }
+        }
+      }
+
+      // Insert prices
+      if (Array.isArray(prices) && prices.length > 0) {
+        for (const pr of prices) {
+          if (pr.country && pr.amount) {
+            await connection.query(`
+              INSERT INTO phone_prices (phone_id, country, currency, amount)
+              VALUES (?, ?, ?, ?)
+            `, [phoneId, pr.country, pr.currency || 'PKR', pr.amount]);
+          }
+        }
+      }
+
+      await connection.commit();
+      return phoneId;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Update phone with specs and prices
+   */
+  static async updatePhone(id, phoneData, specs = [], prices = []) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      let updateFields = [
+        'brand_id = ?', 'name = ?', 'slug = ?', 'short_description = ?',
+        'release_date = ?', 'status = ?', 'price = ?', 'featured = ?',
+        'popular = ?', 'meta_title = ?', 'meta_description = ?'
+      ];
+      let updateValues = [
+        phoneData.brand_id,
+        phoneData.name,
+        phoneData.slug,
+        phoneData.short_description || '',
+        phoneData.release_date || '',
+        phoneData.status || 'Available',
+        phoneData.price || 0,
+        phoneData.featured ? 1 : 0,
+        phoneData.popular ? 1 : 0,
+        phoneData.meta_title || `${phoneData.name} Price in Pakistan & Specifications | PhonesDaddy`,
+        phoneData.meta_description || `${phoneData.name} specifications, price in Pakistan, camera, battery, and details.`
+      ];
+
+      if (phoneData.image) {
+        updateFields.push('image = ?');
+        updateValues.push(phoneData.image);
+      }
+
+      // Always update images gallery if provided
+      if (phoneData.images !== undefined) {
+        updateFields.push('images = ?');
+        updateValues.push(Array.isArray(phoneData.images) ? JSON.stringify(phoneData.images) : phoneData.images);
+      }
+
+      updateValues.push(id);
+
+      await connection.query(`
+        UPDATE phones
+        SET ${updateFields.join(', ')}
+        WHERE id = ?
+      `, updateValues);
+
+      // If specs provided, overwrite existing
+      if (Array.isArray(specs) && specs.length > 0) {
+        await connection.query(`DELETE FROM phone_specs WHERE phone_id = ?`, [id]);
+        let order = 1;
+        for (const s of specs) {
+          if (s.section && s.key && s.value) {
+            await connection.query(`
+              INSERT INTO phone_specs (phone_id, section, spec_key, spec_value, sort_order)
+              VALUES (?, ?, ?, ?, ?)
+            `, [id, s.section, s.key, s.value, s.sort_order || order++]);
+          }
+        }
+      }
+
+      // If prices provided, overwrite existing
+      if (Array.isArray(prices) && prices.length > 0) {
+        await connection.query(`DELETE FROM phone_prices WHERE phone_id = ?`, [id]);
+        for (const pr of prices) {
+          if (pr.country && pr.amount) {
+            await connection.query(`
+              INSERT INTO phone_prices (phone_id, country, currency, amount)
+              VALUES (?, ?, ?, ?)
+            `, [id, pr.country, pr.currency || 'PKR', pr.amount]);
+          }
+        }
+      }
+
+      await connection.commit();
+      return true;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
+   * Delete phone
+   */
+  static async deletePhone(id) {
+    const [res] = await pool.query(`DELETE FROM phones WHERE id = ?`, [id]);
+    return res.affectedRows > 0;
+  }
+
+  /**
+   * Fast global search for auto-complete dropdown
+   */
+  static async searchPhones(query, limit = 8) {
+    const searchTerm = `%${query.trim()}%`;
+    const [rows] = await pool.query(`
+      SELECT 
+        p.id, p.name, p.slug, p.image, p.price, p.status, p.release_date,
+        b.name AS brand_name, b.slug AS brand_slug
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      WHERE p.name LIKE ? OR b.name LIKE ? OR p.short_description LIKE ?
+      ORDER BY p.popular DESC, p.views DESC, p.id DESC
+      LIMIT ?
+    `, [searchTerm, searchTerm, searchTerm, parseInt(limit, 10)]);
+
+    return rows;
+  }
+
+  /**
+   * Multi-phone comparison data
+   */
+  static async getPhonesForCompare(slugs = []) {
+    if (!Array.isArray(slugs) || slugs.length === 0) return [];
+
+    const cleanSlugs = slugs.map(s => s.trim()).filter(Boolean).slice(0, 4);
+    if (cleanSlugs.length === 0) return [];
+
+    const [phones] = await pool.query(`
+      SELECT 
+        p.id, p.name, p.slug, p.image, p.release_date, p.status, p.price,
+        b.name AS brand_name, b.slug AS brand_slug
+      FROM phones p
+      JOIN brands b ON p.brand_id = b.id
+      WHERE p.slug IN (${cleanSlugs.map(() => '?').join(',')})
+    `, cleanSlugs);
+
+    // Keep order according to requested slugs
+    const phoneMap = {};
+    for (const ph of phones) {
+      phoneMap[ph.slug] = ph;
+    }
+
+    const orderedPhones = [];
+    for (const s of cleanSlugs) {
+      if (phoneMap[s]) orderedPhones.push(phoneMap[s]);
+    }
+
+    if (orderedPhones.length === 0) return [];
+
+    const phoneIds = orderedPhones.map(p => p.id);
+    const [specs] = await pool.query(`
+      SELECT phone_id, section, spec_key, spec_value
+      FROM phone_specs
+      WHERE phone_id IN (${phoneIds.map(() => '?').join(',')})
+      ORDER BY sort_order ASC, id ASC
+    `, phoneIds);
+
+    const specsByPhone = {};
+    for (const s of specs) {
+      if (!specsByPhone[s.phone_id]) specsByPhone[s.phone_id] = {};
+      if (!specsByPhone[s.phone_id][s.section]) specsByPhone[s.phone_id][s.section] = {};
+      specsByPhone[s.phone_id][s.section][s.spec_key] = s.spec_value;
+    }
+
+    for (const p of orderedPhones) {
+      p.specs = specsByPhone[p.id] || {};
+    }
+
+    return orderedPhones;
+  }
+}
+
+module.exports = PhoneModel;

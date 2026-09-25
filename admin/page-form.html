@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Editor — PhonesDaddy Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <!-- Quill Snow CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <style>
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .ql-toolbar.ql-snow {
+      border-color: #cbd5e1;
+      border-radius: 8px 8px 0 0;
+      background: #f8fafc;
+    }
+    .ql-container.ql-snow {
+      border-color: #cbd5e1;
+      border-radius: 0 0 8px 8px;
+      font-size: 15px;
+      font-family: inherit;
+      min-height: 440px;
+      background: #ffffff;
+    }
+    .ql-editor {
+      min-height: 420px;
+      line-height: 1.8;
+    }
+    .ql-editor h1 { font-size: 2rem; margin-bottom: 0.8rem; font-weight: 800; color: #0f172a; }
+    .ql-editor h2 { font-size: 1.6rem; margin-top: 1.2rem; margin-bottom: 0.6rem; font-weight: 700; color: #0f172a; }
+    .ql-editor h3 { font-size: 1.3rem; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 700; color: #0f172a; }
+    .ql-editor p { margin-bottom: 1rem; color: #334155; }
+    .ql-editor img { max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; }
+    .ql-editor a { color: #0d9488; text-decoration: underline; font-weight: 600; }
+    .ql-editor blockquote {
+      border-left: 4px solid #0d9488;
+      padding-left: 16px;
+      color: #475569;
+      font-style: italic;
+      background: #f0fdfa;
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <div>
+          <h2 id="pageHeadingTitle">Create New Page</h2>
+          <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Design clean informational, legal, or editorial pages with rich content</p>
+        </div>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/pages" class="btn btn-outline btn-sm">Cancel</a>
+        <button id="btnSavePage" type="button" class="btn btn-primary btn-sm">Save &amp; Publish</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <form id="pageEditorForm" onsubmit="return false;">
+        <div class="editor-layout">
+
+          <!-- Left Column: Title, Slug & Quill Editor -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="admin-card">
+              <div class="form-group">
+                <label class="form-label" for="pageTitle">Page Title <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="pageTitle" name="title" class="form-control" style="font-size: 17px; font-weight: 700; padding: 12px 14px;" placeholder="e.g. Terms of Service, Careers, How We Test Phones..." required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="pageSlug">URL Slug</label>
+                <div style="display: flex; gap: 8px;">
+                  <span style="display: flex; align-items: center; font-size: 13px; color: #64748b; background: #f1f5f9; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    /page/
+                  </span>
+                  <input type="text" id="pageSlug" name="slug" class="form-control" placeholder="terms-of-service">
+                  <button type="button" id="btnAutoSlug" class="btn btn-outline btn-sm" style="white-space: nowrap;">Auto Slug</button>
+                </div>
+                <small style="color: #64748b; margin-top: 4px; display: block;">Core pages like <code>about-us</code>, <code>contact-us</code>, <code>privacy-policy</code>, and <code>disclaimer</code> can also be accessed directly without <code>/page/</code> prefix.</small>
+              </div>
+            </div>
+
+            <!-- Quill Rich Text Editor Card -->
+            <div class="admin-card">
+              <div class="admin-card-header" style="margin-bottom: 12px; padding-bottom: 8px;">
+                <h3 class="admin-card-title">Page Content Body</h3>
+                <span style="font-size: 12px; color: #64748b;">Supports Headings, Formatting, Custom Colors, Links &amp; Images</span>
+              </div>
+
+              <!-- Quill Container -->
+              <div id="quillEditor"></div>
+              <!-- Hidden input for file upload triggered from Quill image button -->
+              <input type="file" id="quillImageInput" style="display: none;" accept="image/*">
+            </div>
+          </div>
+
+          <!-- Right Column: Settings & SEO -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Publish Settings Card -->
+            <div class="admin-card">
+              <h3 class="admin-card-title" style="margin-bottom: 14px; font-size: 15px;">Publishing Options</h3>
+
+              <div class="form-group">
+                <label class="form-label" for="pageStatus">Status</label>
+                <select id="pageStatus" name="status" class="form-control">
+                  <option value="published">🟢 Published (Live)</option>
+                  <option value="draft">🟡 Draft (Hidden)</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="background: #f0fdfa; padding: 12px; border-radius: 6px; border: 1px solid #ccfbf1; margin-bottom: 16px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #0f766e; font-size: 14px; margin: 0;">
+                  <input type="checkbox" id="pageShowInFooter" name="show_in_footer" checked style="width: 18px; height: 18px; accent-color: #0d9488;">
+                  <span>Show in Website Footer</span>
+                </label>
+                <span style="display: block; font-size: 11.5px; color: #115e59; margin-top: 4px; padding-left: 26px;">
+                  Automatically include this link under "Company &amp; Legal" in the public website footer.
+                </span>
+              </div>
+
+              <button type="button" id="btnSavePageSide" class="btn btn-primary btn-block" style="margin-top: 8px;">
+                Save Page
+              </button>
+            </div>
+
+            <!-- SEO & Meta Tags Card -->
+            <div class="admin-card">
+              <h3 class="admin-card-title" style="margin-bottom: 14px; font-size: 15px;">Search Engine Optimization (SEO)</h3>
+
+              <div class="form-group">
+                <label class="form-label" for="pageMetaTitle">Meta Title</label>
+                <input type="text" id="pageMetaTitle" name="meta_title" class="form-control" placeholder="Page Title | PhonesDaddy">
+                <small style="color: #64748b;">Recommended: 50-60 characters</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="pageMetaDescription">Meta Description</label>
+                <textarea id="pageMetaDescription" name="meta_description" class="form-control" rows="3" placeholder="Brief summary of this page for Google search results..."></textarea>
+                <small style="color: #64748b;">Recommended: 120-160 characters</small>
+              </div>
+            </div>
+
+            <!-- Live Preview / Quick Link Card (if editing) -->
+            <div class="admin-card" id="pageLiveViewCard" style="display: none;">
+              <h3 class="admin-card-title" style="margin-bottom: 8px; font-size: 15px;">Live Page Link</h3>
+              <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Check how this page renders on the public site:</p>
+              <a id="pageLiveViewBtn" href="#" target="_blank" class="btn btn-outline btn-block btn-sm">
+                <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> View Live Page
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Quill JS Core -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    let quill;
+    let pageId = null;
+
+    // Toast notification
+    function showAdminToast(message, type = 'success') {
+      let container = document.getElementById('adminToastContainer');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'adminToastContainer';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      const bg = type === 'error' ? '#ef4444' : type === 'info' ? '#0284c7' : '#0d9488';
+      toast.style.cssText = `background:${bg};color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.18);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-10px);transition:all 0.25s ease;pointer-events:auto;`;
+      const icon = type === 'error' ? (window.ICONS ? ICONS.info : '!') : type === 'info' ? (window.ICONS ? ICONS.info : 'i') : (window.ICONS ? ICONS.checkCircle : '✓');
+      toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+      });
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Determine if we are editing an existing page from URL (/admin/pages/edit/:id)
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.includes('edit')) {
+      pageId = pathParts[pathParts.length - 1];
+    }
+
+    function initQuillEditor() {
+      const toolbarOptions = [
+        [{ 'header': [1, 2, 3, 4, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [
+          '#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff',
+          '#ffffff', '#facccc', '#ffebcc', '#ffffcc', '#cce8cc', '#cce0f5', '#ebd6ff',
+          '#0d9488', '#0f766e', '#ea580c', '#64748b', '#0f172a', '#b91c1c', '#15803d'
+        ] }, { 'background': [
+          '#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff',
+          '#ffffff', '#facccc', '#ffebcc', '#ffffcc', '#cce8cc', '#cce0f5', '#ebd6ff',
+          '#f0fdfa', '#ccfbf1', '#fef3c7', '#fee2e2', '#f1f5f9'
+        ] }],
+        [{ 'align': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['blockquote', 'code-block'],
+        ['link', 'image'],
+        ['clean']
+      ];
+
+      quill = new Quill('#quillEditor', {
+        theme: 'snow',
+        placeholder: 'Write comprehensive page content, mission statement, contact information, or policy rules...',
+        modules: {
+          toolbar: toolbarOptions
+        }
+      });
+
+      // Custom image upload handler for Quill
+      const toolbar = quill.getModule('toolbar');
+      toolbar.addHandler('image', () => {
+        const choice = confirm('Click OK to upload an image from your computer, or CANCEL to enter an image URL.');
+        if (choice) {
+          document.getElementById('quillImageInput').click();
+        } else {
+          const url = prompt('Enter image URL:');
+          if (url && url.trim() !== '') {
+            const range = quill.getSelection(true) || { index: quill.getLength() };
+            quill.insertEmbed(range.index || 0, 'image', url.trim());
+          }
+        }
+      });
+
+      // Direct file upload for inline images using news image upload endpoint
+      document.getElementById('quillImageInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          showAdminToast('Uploading inline image...', 'info');
+          const res = await fetch('/api/news/admin/upload-inline-image', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+          });
+          const json = await res.json();
+          if (json.success && json.url) {
+            const range = quill.getSelection(true) || { index: quill.getLength() };
+            quill.insertEmbed(range.index || 0, 'image', json.url);
+            showAdminToast('Image inserted into page!');
+          } else {
+            alert('Image upload failed: ' + (json.message || 'Unknown error'));
+          }
+        } catch (err) {
+          console.error('Error uploading inline image:', err);
+          alert('Upload error: ' + (err.message || 'Network error'));
+        }
+        e.target.value = '';
+      });
+    }
+
+    function generateSlug(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[\s\W-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    async function loadPageData(id) {
+      document.getElementById('pageHeadingTitle').textContent = 'Edit Page';
+      document.title = 'Edit Page — PhonesDaddy Admin';
+
+      try {
+        const res = await fetch(`/api/admin/pages/admin/${id}`);
+        const json = await res.json();
+        if (!json.success || !json.data) {
+          alert('Page not found');
+          window.location.href = '/admin/pages';
+          return;
+        }
+
+        const p = json.data;
+        document.getElementById('pageTitle').value = p.title || '';
+        document.getElementById('pageSlug').value = p.slug || '';
+        document.getElementById('pageStatus').value = p.status || 'published';
+        document.getElementById('pageShowInFooter').checked = p.show_in_footer ? true : false;
+        document.getElementById('pageMetaTitle').value = p.meta_title || '';
+        document.getElementById('pageMetaDescription').value = p.meta_description || '';
+
+        if (p.content) {
+          quill.clipboard.dangerouslyPasteHTML(p.content);
+        }
+
+        // Live preview button setup
+        const liveCard = document.getElementById('pageLiveViewCard');
+        const liveBtn = document.getElementById('pageLiveViewBtn');
+        const liveUrl = ['about-us', 'contact-us', 'privacy-policy', 'disclaimer'].includes(p.slug)
+          ? `/${p.slug}`
+          : `/page/${p.slug}`;
+        liveBtn.href = liveUrl;
+        liveCard.style.display = 'block';
+
+      } catch (err) {
+        console.error('Error loading page:', err);
+        alert('Server error loading page data');
+      }
+    }
+
+    async function handleSavePage() {
+      const title = document.getElementById('pageTitle').value.trim();
+      if (!title) {
+        alert('Please enter a page title.');
+        document.getElementById('pageTitle').focus();
+        return;
+      }
+
+      const slug = document.getElementById('pageSlug').value.trim() || generateSlug(title);
+      const status = document.getElementById('pageStatus').value;
+      const show_in_footer = document.getElementById('pageShowInFooter').checked ? '1' : '0';
+      const meta_title = document.getElementById('pageMetaTitle').value.trim();
+      const meta_description = document.getElementById('pageMetaDescription').value.trim();
+      const content = quill.root.innerHTML;
+
+      const payload = {
+        title,
+        slug,
+        status,
+        show_in_footer,
+        meta_title,
+        meta_description,
+        content
+      };
+
+      const saveBtn = document.getElementById('btnSavePage');
+      const saveSideBtn = document.getElementById('btnSavePageSide');
+      saveBtn.disabled = true;
+      saveSideBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+      saveSideBtn.textContent = 'Saving...';
+
+      try {
+        const url = pageId ? `/api/admin/pages/admin/${pageId}` : '/api/admin/pages/admin';
+        const method = pageId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          credentials: 'same-origin'
+        });
+
+        const json = await res.json();
+        if (json.success) {
+          showAdminToast(pageId ? 'Page updated successfully!' : 'Page created successfully!');
+          setTimeout(() => {
+            window.location.href = '/admin/pages';
+          }, 600);
+        } else {
+          alert('Failed to save page: ' + (json.message || 'Unknown error'));
+          saveBtn.disabled = false;
+          saveSideBtn.disabled = false;
+          saveBtn.textContent = 'Save & Publish';
+          saveSideBtn.textContent = 'Save Page';
+        }
+      } catch (err) {
+        console.error('Save page error:', err);
+        alert('Error saving page: ' + err.message);
+        saveBtn.disabled = false;
+        saveSideBtn.disabled = false;
+        saveBtn.textContent = 'Save & Publish';
+        saveSideBtn.textContent = 'Save Page';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initQuillEditor();
+
+      // Auto-generate slug on blur
+      document.getElementById('pageTitle').addEventListener('blur', (e) => {
+        const slugInput = document.getElementById('pageSlug');
+        if (!slugInput.value.trim()) {
+          slugInput.value = generateSlug(e.target.value);
+        }
+      });
+
+      document.getElementById('btnAutoSlug').addEventListener('click', () => {
+        const title = document.getElementById('pageTitle').value;
+        if (title) {
+          document.getElementById('pageSlug').value = generateSlug(title);
+        }
+      });
+
+      document.getElementById('btnSavePage').addEventListener('click', handleSavePage);
+      document.getElementById('btnSavePageSide').addEventListener('click', handleSavePage);
+
+      if (pageId) {
+        loadPageData(pageId);
+      }
+    });
+  </script>
+</body>
+</html>

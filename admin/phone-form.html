@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Form — PhonesDaddy Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 16px;">P</div>
+        <span>PhonesDaddy</span>
+      </div>
+      <button class="admin-sidebar-close-btn" onclick="closeAdminSidebar()" aria-label="Close Navigation"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+
+    <ul class="admin-nav">
+      <li><a href="/admin/dashboard" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</a></li>
+      <li><a href="/admin/phones" class="admin-nav-link active"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Phones</a></li>
+      <li><a href="/admin/brands" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg> Brands</a></li>
+      <li><a href="/admin/news" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Blog &amp; News</a></li>
+      <li><a href="/admin/categories" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Article Categories</a></li>
+      <li><a href="/admin/pages" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Pages</a></li>
+      <li><a href="/admin/reviews" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Reviews &amp; Comments</a></li>
+      <li class="admin-nav-item-dropdown" id="navSettingsDropdown">
+        <div class="admin-nav-link admin-nav-dropdown-toggle" onclick="toggleSettingsDropdown(event)">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</span>
+          </div>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <ul class="admin-nav-submenu" id="settingsSubmenu">
+          <li>
+            <a href="/admin/settings#general" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> General &amp; Snippets</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings#ad-placements" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> Ad Placements</span>
+              <span class="admin-nav-badge">9 Slots</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
+    </ul>
+
+    <div class="admin-sidebar-footer">
+      <span>Logged in as <strong>Admin</strong></span>
+      <button onclick="handleLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Logout</button>
+    </div>
+  </aside>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-topbar-title-wrap">
+        <button type="button" class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Toggle Navigation Menu"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <h2 id="phoneFormTitle">Add New Mobile Phone</h2>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="/admin/phones" class="btn btn-outline btn-sm">&larr; Back to Phones</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <form id="phoneForm" enctype="multipart/form-data">
+        
+        <!-- Auto-Fetch Specifications Card -->
+        <div class="admin-card auto-fetch-card" style="border-left: 4px solid var(--primary); background: linear-gradient(to right, #f8fafc, #ffffff);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <h3 class="admin-card-title" style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                <span>⚡ Auto-Fetch Specs from URL</span>
+                <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 9999px;">WhatMobile & GSMArena</span>
+              </h3>
+              <p style="color: #64748b; font-size: 13px;">
+                Paste a phone page link from <strong>whatmobile.com.pk</strong> or <strong>gsmarena.com</strong> to automatically fetch model details, price, images, and section specifications.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 12px;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; color: #047857; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span> WhatMobile
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; color: #1d4ed8; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                <span style="width: 6px; height: 6px; background: #3b82f6; border-radius: 50%;"></span> GSMArena
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 280px; position: relative;">
+              <input type="url" id="externalUrlInput" class="form-control" placeholder="e.g. https://www.whatmobile.com.pk/Tecno_Spark-8C or https://www.gsmarena.com/zte_nubia_navix_ultra_5g-14946.php" style="padding-right: 32px; font-size: 13px;">
+              <button type="button" id="btnClearUrl" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; display: none;" title="Clear URL">&times;</button>
+            </div>
+            <button type="button" id="btnFetchSpecs" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 9px 18px;">
+              <span id="fetchIcon">⚡</span>
+              <span id="fetchBtnText">Fetch Phone Specs</span>
+            </button>
+          </div>
+
+          <!-- Status & Message banner -->
+          <div id="fetchSpecsStatus" style="display: none; margin-top: 12px; font-size: 13px; border-radius: 6px; padding: 10px 14px;"></div>
+        </div>
+
+        <!-- General Information Card -->
+        <div class="admin-card">
+          <h3 class="admin-card-title" style="margin-bottom: 16px;">1. General Information</h3>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="phoneBrandSelect">Brand *</label>
+              <select id="phoneBrandSelect" name="brand_id" class="form-control" required>
+                <option value="">Loading brands...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phoneNameInput">Phone Model Name *</label>
+              <input type="text" id="phoneNameInput" name="name" class="form-control" placeholder="e.g. Samsung Galaxy S26 Ultra" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phoneSlugInput">URL Slug *</label>
+              <input type="text" id="phoneSlugInput" name="slug" class="form-control" placeholder="e.g. samsung-galaxy-s26-ultra" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phonePriceInput">Official Price (PKR) *</label>
+              <input type="number" id="phonePriceInput" name="price" class="form-control" placeholder="e.g. 299999" required min="0">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phoneStatusSelect">Market Status</label>
+              <select id="phoneStatusSelect" name="status" class="form-control">
+                <option value="Available">Available</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Rumored">Rumored</option>
+                <option value="Discontinued">Discontinued</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phoneReleaseDate">Release Date</label>
+              <input type="text" id="phoneReleaseDate" name="release_date" class="form-control" placeholder="e.g. September 2026">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phoneImageFile">Upload / Change Main Phone Image (JPEG, PNG, WebP, SVG)</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="file" id="phoneImageFile" name="image" class="form-control" accept="image/*" style="flex: 1;">
+                <button type="button" id="btnDeletePhoneImage" class="btn btn-outline btn-sm" style="display: none; color: #dc2626; border-color: #fca5a5; font-size: 12px; white-space: nowrap; cursor: pointer;">
+                  🗑️ Delete Image
+                </button>
+              </div>
+              <input type="hidden" id="phoneRemoveImage" name="remove_image" value="false">
+              <input type="hidden" id="phoneScrapedImage" name="scraped_image" value="">
+              <input type="hidden" id="phoneImagesJson" name="images" value="">
+              <img id="currentImagePreview" src="" alt="Preview" style="display: none; height: 90px; margin-top: 10px; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 4px;">
+            </div>
+
+            <div class="form-group" style="justify-content: center;">
+              <div style="display: flex; gap: 24px; margin-top: 20px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" name="featured" id="phoneFeatured" value="true">
+                  <span>Mark as Featured</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" name="popular" id="phonePopular" value="true">
+                  <span>Mark as Popular</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Gallery Images Strip / Grid -->
+          <div id="adminGalleryContainer" style="display: none; margin-top: 20px; padding: 16px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                  <span>🖼️ Fetched Gallery Images</span>
+                  <span id="galleryCountBadge" class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 11px; padding: 2px 8px; border-radius: 9999px;">0 images</span>
+                </h4>
+              </div>
+              <div style="font-size: 12px; color: #64748b;">
+                ⭐ Click thumbnail to set as Primary Image &bull; 🗑️ Click &times; to remove
+              </div>
+            </div>
+            <div id="adminGalleryGrid" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+              <!-- Dynamically populated thumbnails -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Country Pricing Card -->
+        <div class="admin-card">
+          <h3 class="admin-card-title" style="margin-bottom: 6px;">2. Global Multi-Country Pricing</h3>
+          <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">Display official or expected prices across international markets.</p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Pakistan (PKR)</label>
+              <input type="text" id="pricePKR" class="form-control" placeholder="e.g. PKR 299,999">
+            </div>
+            <div class="form-group">
+              <label class="form-label">USA (USD)</label>
+              <input type="text" id="priceUSD" class="form-control" placeholder="e.g. USD 1,199">
+            </div>
+            <div class="form-group">
+              <label class="form-label">UAE (AED)</label>
+              <input type="text" id="priceAED" class="form-control" placeholder="e.g. AED 4,499">
+            </div>
+            <div class="form-group">
+              <label class="form-label">India (INR)</label>
+              <input type="text" id="priceINR" class="form-control" placeholder="e.g. INR 124,999">
+            </div>
+            <div class="form-group">
+              <label class="form-label">UK (GBP)</label>
+              <input type="text" id="priceGBP" class="form-control" placeholder="e.g. GBP 1,199">
+            </div>
+          </div>
+        </div>
+
+        <!-- Short Summary / Key Highlights Card -->
+        <div class="admin-card summary-highlights-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 class="admin-card-title" style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                <span>3. Short Summary / Key Highlights</span>
+                <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">Derived from Specs</span>
+              </h3>
+              <p style="color: #64748b; font-size: 13px;">Auto-generated or custom key highlights summarizing display, processor, camera, battery & memory.</p>
+            </div>
+            <button type="button" id="btnAutoGenerateSummary" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; color: #0284c7; border-color: #bae6fd; background: #f0f9ff; font-weight: 600; cursor: pointer;" title="Derive summary from current specifications table">
+              <span>⚡</span>
+              <span>Auto-Generate from Specs</span>
+            </button>
+          </div>
+
+          <div class="form-group full-width" style="margin-bottom: 0;">
+            <textarea id="phoneShortDesc" name="short_description" class="form-control" rows="8" placeholder="Mobile phone overview paragraph (e.g. Vivo S60 price in Pakistan is expected to be Rs. 184,999...&#10;&#10;Vivo S60 - Powerful &amp; Stylish Device!&#10;Powered by Snapdragon 8s Gen 3 with 6.59&quot; AMOLED 144Hz display, 50MP triple camera, and 6500mAh battery with 90W fast charging...)" style="font-family: inherit; font-size: 13.5px; line-height: 1.6;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; color: #64748b;">
+              <span>💡 Displayed as the official Device Overview paragraph between Global Prices and Detailed Technical Specifications on the public site.</span>
+              <span id="summaryCharCount">0 characters</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Specification Editor Card -->
+        <div class="admin-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 class="admin-card-title" style="margin-bottom: 4px;">4. Detailed Technical Specifications Builder</h3>
+              <p style="color: #64748b; font-size: 13px;">Add, edit, or delete dynamic specification fields grouped by section.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="btnAddDefaultSpecs" class="btn btn-outline btn-sm">Load Standard Template</button>
+              <button type="button" id="btnAddSpecRow" class="btn btn-primary btn-sm">+ Add Specification Field</button>
+            </div>
+          </div>
+
+          <div class="spec-builder-box">
+            <div style="display: grid; grid-template-columns: 180px 200px 1fr 40px; gap: 12px; margin-bottom: 8px; font-weight: 700; font-size: 12px; color: #64748b; text-transform: uppercase;">
+              <div>Section</div>
+              <div>Field / Key</div>
+              <div>Specification Value</div>
+              <div></div>
+            </div>
+
+            <!-- Dynamic Rows Container -->
+            <div id="specRowsContainer"></div>
+          </div>
+        </div>
+
+        <!-- Form Submission Buttons -->
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-bottom: 40px;">
+          <a href="/admin/phones" class="btn btn-outline">Cancel</a>
+          <button type="submit" class="btn btn-primary" style="padding: 10px 28px; font-size: 15px;">Save Mobile Phone</button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
