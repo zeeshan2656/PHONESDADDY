@@ -573,12 +573,17 @@ function renderAffiliateDeals(links = [], phoneName = '') {
   const container = document.getElementById('phoneAffiliateList');
   if (!section || !container) return;
 
-  if (!links || !Array.isArray(links) || links.length === 0) {
+  let affArray = links;
+  if (typeof affArray === 'string') {
+    try { affArray = JSON.parse(affArray); } catch (_) { affArray = []; }
+  }
+
+  if (!affArray || !Array.isArray(affArray) || affArray.length === 0) {
     section.style.display = 'none';
     return;
   }
 
-  const validLinks = links.filter(l => l && l.store && (l.url || l.link));
+  const validLinks = affArray.filter(l => l && l.store && (l.url || l.link));
   if (validLinks.length === 0) {
     section.style.display = 'none';
     return;
@@ -589,7 +594,10 @@ function renderAffiliateDeals(links = [], phoneName = '') {
   container.innerHTML = validLinks.map((item, idx) => {
     const store = item.store || 'Store';
     const price = item.price && item.price.trim() ? item.price.trim() : 'View Live Price';
-    const targetUrl = item.url || item.link || '#';
+    let targetUrl = (item.url || item.link || '#').trim();
+    if (targetUrl !== '#' && !/^https?:\/\//i.test(targetUrl)) {
+      targetUrl = 'https://' + targetUrl;
+    }
     const meta = getStoreMeta(store);
 
     return `
@@ -625,6 +633,7 @@ function renderAffiliateDeals(links = [], phoneName = '') {
 function extractYouTubeId(url) {
   if (!url || typeof url !== 'string') return null;
   const clean = url.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) return clean;
   const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = clean.match(regExp);
   return match ? match[1] : null;

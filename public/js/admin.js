@@ -74,6 +74,7 @@ function escapeQuote(str) {
 function extractYouTubeVideoId(url) {
   if (!url || typeof url !== 'string') return null;
   const clean = url.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) return clean;
   const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = clean.match(regExp);
   return match ? match[1] : null;
@@ -888,25 +889,6 @@ async function initPhoneForm() {
   // ── YouTube Video Review & Preview Setup ──────────────────────────────────
   const videoUrlInput = document.getElementById('phoneVideoUrl');
   const btnClearVideoUrl = document.getElementById('btnClearVideoUrl');
-  const videoPreviewBox = document.getElementById('adminVideoPreviewBox');
-  const videoPreviewIframe = document.getElementById('adminVideoPreviewIframe');
-  const previewVideoIdBadge = document.getElementById('previewVideoIdBadge');
-
-  function updateVideoPreview() {
-    if (!videoUrlInput) return;
-    const url = videoUrlInput.value.trim();
-    if (btnClearVideoUrl) btnClearVideoUrl.style.display = url ? 'inline-flex' : 'none';
-
-    const videoId = extractYouTubeVideoId(url);
-    if (videoId && videoPreviewBox && videoPreviewIframe) {
-      videoPreviewIframe.src = `https://www.youtube.com/embed/${videoId}`;
-      if (previewVideoIdBadge) previewVideoIdBadge.textContent = `ID: ${videoId}`;
-      videoPreviewBox.style.display = 'block';
-    } else {
-      if (videoPreviewIframe) videoPreviewIframe.src = '';
-      if (videoPreviewBox) videoPreviewBox.style.display = 'none';
-    }
-  }
 
   if (videoUrlInput) {
     videoUrlInput.addEventListener('input', updateVideoPreview);
@@ -920,46 +902,7 @@ async function initPhoneForm() {
   }
 
   // ── Dynamic External Store Affiliate Deals Builder ─────────────────────────
-  const affiliateContainer = document.getElementById('affiliateRowsContainer');
   const btnAddAffiliate = document.getElementById('btnAddAffiliateRow');
-
-  function addAffiliateRow(store = '', price = '', url = '') {
-    if (!affiliateContainer) return;
-
-    const row = document.createElement('div');
-    row.className = 'affiliate-row-item';
-
-    row.innerHTML = `
-      <div>
-        <input type="text" class="form-control aff-store-input" placeholder="e.g. Amazon, Daraz" value="${escapeHtml(store)}" list="storePresetsList">
-        <datalist id="storePresetsList">
-          <option value="Amazon">
-          <option value="Daraz">
-          <option value="PriceOye">
-          <option value="AliExpress">
-          <option value="Telemart">
-          <option value="Shophive">
-          <option value="Official Store">
-        </datalist>
-      </div>
-      <div>
-        <input type="text" class="form-control aff-price-input" placeholder="e.g. Rs. 289,999 or $1,199" value="${escapeHtml(price)}">
-      </div>
-      <div>
-        <input type="url" class="form-control aff-url-input" placeholder="https://..." value="${escapeHtml(url)}">
-      </div>
-      <div>
-        <button type="button" class="btn-remove-row btn-remove-aff-row" title="Remove store deal">&times;</button>
-      </div>
-    `;
-
-    row.querySelector('.btn-remove-aff-row').addEventListener('click', () => {
-      row.remove();
-    });
-
-    affiliateContainer.appendChild(row);
-  }
-
   if (btnAddAffiliate) {
     btnAddAffiliate.addEventListener('click', () => {
       addAffiliateRow('', '', '');
@@ -970,7 +913,15 @@ async function initPhoneForm() {
   document.querySelectorAll('.quick-add-affiliate').forEach(btn => {
     btn.addEventListener('click', () => {
       const store = btn.dataset.store || '';
-      const price = btn.dataset.price || '';
+      let price = '';
+      const pricePKRVal = document.getElementById('pricePKR')?.value || '';
+      const priceUSDVal = document.getElementById('priceUSD')?.value || '';
+      if (store === 'Daraz' || store === 'PriceOye' || store === 'Telemart' || store === 'Shophive') {
+        price = pricePKRVal || '';
+      } else if (store === 'Amazon' || store === 'AliExpress') {
+        price = priceUSDVal || '';
+      }
+      if (!price) price = btn.dataset.price || '';
       addAffiliateRow(store, price, '');
     });
   });
@@ -1296,11 +1247,25 @@ async function initPhoneForm() {
     // Collect External Store Affiliate Deals
     const affRows = document.querySelectorAll('.affiliate-row-item');
     const affArray = [];
+    const phoneNameVal = document.getElementById('phoneNameInput')?.value.trim() || '';
     affRows.forEach(row => {
       const store = row.querySelector('.aff-store-input')?.value.trim();
       const price = row.querySelector('.aff-price-input')?.value.trim();
-      const url = row.querySelector('.aff-url-input')?.value.trim();
-      if (store && url) {
+      let url = row.querySelector('.aff-url-input')?.value.trim() || '';
+      if (store) {
+        if (!url) {
+          if (store.toLowerCase().includes('amazon')) {
+            url = `https://www.amazon.com/s?k=${encodeURIComponent(phoneNameVal)}`;
+          } else if (store.toLowerCase().includes('daraz')) {
+            url = `https://www.daraz.pk/catalog/?q=${encodeURIComponent(phoneNameVal)}`;
+          } else if (store.toLowerCase().includes('priceoye')) {
+            url = `https://priceoye.pk/search?q=${encodeURIComponent(phoneNameVal)}`;
+          } else {
+            url = `https://www.google.com/search?q=${encodeURIComponent(store + ' ' + phoneNameVal)}`;
+          }
+        } else if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url;
+        }
         affArray.push({ store, price: price || '', url });
       }
     });
@@ -1331,6 +1296,71 @@ async function initPhoneForm() {
       alert('Error saving phone. Please check required fields.');
     }
   });
+}
+
+// ── Shared YouTube Video Review & Preview Helpers ─────────────────────────────
+function updateVideoPreview() {
+  const videoUrlInput = document.getElementById('phoneVideoUrl');
+  const btnClearVideoUrl = document.getElementById('btnClearVideoUrl');
+  const videoPreviewBox = document.getElementById('adminVideoPreviewBox');
+  const videoPreviewIframe = document.getElementById('adminVideoPreviewIframe');
+  const previewVideoIdBadge = document.getElementById('previewVideoIdBadge');
+
+  if (!videoUrlInput) return;
+  const url = videoUrlInput.value.trim();
+  if (btnClearVideoUrl) btnClearVideoUrl.style.display = url ? 'inline-flex' : 'none';
+
+  const videoId = extractYouTubeVideoId(url);
+  if (videoId && videoPreviewBox && videoPreviewIframe) {
+    videoPreviewIframe.src = `https://www.youtube.com/embed/${videoId}`;
+    if (previewVideoIdBadge) previewVideoIdBadge.textContent = `ID: ${videoId}`;
+    videoPreviewBox.style.display = 'block';
+  } else {
+    if (videoPreviewIframe) videoPreviewIframe.src = '';
+    if (videoPreviewBox) videoPreviewBox.style.display = 'none';
+  }
+}
+
+// ── Shared External Store Affiliate Deals Row Builder ─────────────────────────
+function addAffiliateRow(store = '', price = '', url = '') {
+  const affiliateContainer = document.getElementById('affiliateRowsContainer');
+  if (!affiliateContainer) return;
+
+  const row = document.createElement('div');
+  row.className = 'affiliate-row-item';
+
+  row.innerHTML = `
+    <div>
+      <input type="text" class="form-control aff-store-input" placeholder="e.g. Amazon, Daraz" value="${escapeHtml(store)}" list="storePresetsList">
+      <datalist id="storePresetsList">
+        <option value="Amazon">
+        <option value="Daraz">
+        <option value="PriceOye">
+        <option value="AliExpress">
+        <option value="Telemart">
+        <option value="Shophive">
+        <option value="Official Store">
+      </datalist>
+    </div>
+    <div>
+      <input type="text" class="form-control aff-price-input" placeholder="e.g. Rs. 289,999 or $1,199" value="${escapeHtml(price)}">
+    </div>
+    <div>
+      <input type="url" class="form-control aff-url-input" placeholder="https://..." value="${escapeHtml(url)}">
+    </div>
+    <div>
+      <button type="button" class="btn-remove-row btn-remove-aff-row" title="Remove store deal">&times;</button>
+    </div>
+  `;
+
+  const removeBtn = row.querySelector('.btn-remove-aff-row');
+  if (removeBtn) {
+    removeBtn.addEventListener('click', () => {
+      row.remove();
+    });
+  }
+
+  affiliateContainer.appendChild(row);
 }
 
 async function populateBrandDropdown(selectedId = null) {
@@ -1419,9 +1449,15 @@ async function loadPhoneDataForEdit(id) {
     const affContainer = document.getElementById('affiliateRowsContainer');
     if (affContainer) {
       affContainer.innerHTML = '';
-      if (p.affiliate_links && Array.isArray(p.affiliate_links) && p.affiliate_links.length > 0) {
-        for (const item of p.affiliate_links) {
-          addAffiliateRow(item.store, item.price, item.url);
+      let affLinks = p.affiliate_links;
+      if (typeof affLinks === 'string') {
+        try { affLinks = JSON.parse(affLinks); } catch (_) { affLinks = []; }
+      }
+      if (Array.isArray(affLinks) && affLinks.length > 0) {
+        for (const item of affLinks) {
+          if (item) {
+            addAffiliateRow(item.store || '', item.price || '', item.url || item.link || '');
+          }
         }
       }
     }

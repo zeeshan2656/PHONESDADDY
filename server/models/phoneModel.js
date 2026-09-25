@@ -398,7 +398,9 @@ class PhoneModel {
         phoneData.short_description || '',
         phoneData.image || '',
         phoneData.images ? JSON.stringify(phoneData.images) : null,
-        phoneData.affiliate_links ? (typeof phoneData.affiliate_links === 'string' ? phoneData.affiliate_links : JSON.stringify(phoneData.affiliate_links)) : null,
+        (Array.isArray(phoneData.affiliate_links) && phoneData.affiliate_links.length > 0)
+          ? JSON.stringify(phoneData.affiliate_links)
+          : (phoneData.affiliate_links && typeof phoneData.affiliate_links === 'string' && phoneData.affiliate_links !== '[]' ? phoneData.affiliate_links : null),
         phoneData.video_url || null,
         phoneData.release_date || '',
         phoneData.status || 'Available',
@@ -476,7 +478,10 @@ class PhoneModel {
 
       if (phoneData.affiliate_links !== undefined) {
         updateFields.push('affiliate_links = ?');
-        updateValues.push(phoneData.affiliate_links ? (typeof phoneData.affiliate_links === 'string' ? phoneData.affiliate_links : JSON.stringify(phoneData.affiliate_links)) : null);
+        const affVal = (Array.isArray(phoneData.affiliate_links) && phoneData.affiliate_links.length > 0)
+          ? JSON.stringify(phoneData.affiliate_links)
+          : (phoneData.affiliate_links && typeof phoneData.affiliate_links === 'string' && phoneData.affiliate_links !== '[]' ? phoneData.affiliate_links : null);
+        updateValues.push(affVal);
       }
 
       if (phoneData.video_url !== undefined) {
