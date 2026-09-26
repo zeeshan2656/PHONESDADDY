@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const AuthController = require('../controllers/authController');
-const { requireAdminAuth } = require('../middleware/auth');
+const { requireAdminAuth, requireMasterAdmin } = require('../middleware/auth');
 
 // Rate limiter for admin login (max 20 attempts per 15 minutes)
 const loginLimiter = rateLimit({
@@ -19,5 +19,11 @@ router.post('/logout', AuthController.logout);
 router.get('/stats', requireAdminAuth, AuthController.dashboardStats);
 router.get('/profile', requireAdminAuth, AuthController.getProfile);
 router.put('/profile', requireAdminAuth, AuthController.updateProfile);
+
+// Team & User Management (Master Admin only)
+router.get('/users', requireMasterAdmin, AuthController.listUsers);
+router.post('/users', requireMasterAdmin, AuthController.createUser);
+router.put('/users/:id', requireMasterAdmin, AuthController.updateUser);
+router.delete('/users/:id', requireMasterAdmin, AuthController.deleteUser);
 
 module.exports = router;

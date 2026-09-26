@@ -23,6 +23,9 @@ const { notFoundHandler, errorHandler } = require('./middleware/error');
 
 const app = express();
 
+// Trust reverse proxy (Hostinger, Cloudflare, Nginx, LiteSpeed, etc.)
+app.set('trust proxy', 1);
+
 // Request Logger
 app.use((req, res, next) => {
   console.log(`[REQ] ${req.method} ${req.originalUrl}`);
@@ -50,9 +53,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'phonesdaddy_secret_key_3892749',
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: 'auto', // Automatically detects HTTPS via reverse proxy headers on Hostinger/Cloudflare
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   }

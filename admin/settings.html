@@ -374,6 +374,11 @@
               <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
             </a>
           </li>
+          <li>
+            <a href="#users" id="sideNavUsers" onclick="switchSettingsSection('users'); return false;" class="admin-nav-sublink">
+              <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Team &amp; User Access</span>
+            </a>
+          </li>
         </ul>
       </li>
       <li><a href="/" target="_blank" class="admin-nav-link"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Public Site</a></li>
@@ -401,6 +406,7 @@
       </div>
       <div class="admin-topbar-actions">
         <button type="button" onclick="previewHeadInjection()" id="btnPreviewTop" class="btn btn-outline btn-sm" style="display: none;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> Preview Output</button>
+        <button type="button" onclick="openAddUserModal()" id="btnAddUserTop" class="btn btn-primary btn-sm" style="display: none;">➕ Add New User</button>
         <button type="button" onclick="submitSettingsForm()" id="btnSaveSettingsTop" class="btn btn-primary btn-sm">💾 Save Settings</button>
         <button type="button" onclick="submitAdminProfile(event)" id="btnSaveProfileTop" class="btn btn-primary btn-sm" style="display: none;">💾 Save Profile Changes</button>
       </div>
@@ -422,6 +428,9 @@
         </button>
         <button type="button" id="tabBtnProfile" onclick="switchSettingsSection('profile')" class="settings-tab-btn">
           <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Admin Profile</span>
+        </button>
+        <button type="button" id="tabBtnUsers" onclick="switchSettingsSection('users')" class="settings-tab-btn">
+          <span><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 👥 Team &amp; User Access</span>
         </button>
       </div>
 
@@ -1273,6 +1282,108 @@
         </form>
       </div>
 
+      <!-- WRAPPER: Team & User Management Section -->
+      <div id="settingsSectionUsers" class="settings-section" style="display: none;">
+        <!-- Informational Banner with Role Explanations -->
+        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid #4338ca; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; color: #ffffff;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(99, 102, 241, 0.25); border: 1px solid #818cf8; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: #c7d2fe;">
+                👥 Role-Based Staff Management
+              </span>
+              <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 8px; color: #ffffff;">Staff Accounts &amp; Access Rights</h3>
+              <p style="font-size: 13px; color: #cbd5e1; margin: 0; line-height: 1.5; max-width: 820px;">
+                Delegate website management securely. Assign dedicated permissions for content writers and phone managers so they only have access to their required sections.
+              </p>
+            </div>
+            <button type="button" onclick="openAddUserModal()" class="btn btn-primary btn-sm" style="align-self: center; background: #6366f1; border-color: #6366f1; padding: 9px 18px; font-weight: 700; font-size: 13px;">
+              ➕ Add New Team Member
+            </button>
+          </div>
+
+          <!-- Role Explanation Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px;">
+            <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; color: #34d399; margin-bottom: 4px;">
+                <span>📝 Article Writer</span>
+              </div>
+              <p style="font-size: 11.5px; color: #94a3b8; margin: 0; line-height: 1.4;">
+                Has access to write, edit, and publish blog articles, tech news, and manage article categories.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; color: #38bdf8; margin-bottom: 4px;">
+                <span>📱 Mobile Phone Manager</span>
+              </div>
+              <p style="font-size: 11.5px; color: #94a3b8; margin: 0; line-height: 1.4;">
+                Has access to add and edit phones, full technical specifications, brands, and affiliate price deals.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; color: #fbbf24; margin-bottom: 4px;">
+                <span>⚡ Contributor</span>
+              </div>
+              <p style="font-size: 11.5px; color: #94a3b8; margin: 0; line-height: 1.4;">
+                Dual permissions: Can manage both mobile phone specs and write articles/news stories.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; color: #a78bfa; margin-bottom: 4px;">
+                <span>👑 Full Administrator</span>
+              </div>
+              <p style="font-size: 11.5px; color: #94a3b8; margin: 0; line-height: 1.4;">
+                Complete master access to site branding, ads, head snippets, system settings, and user management.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Table Card -->
+        <div class="admin-card" style="margin-bottom: 30px;">
+          <div class="admin-card-header" style="border-bottom: 1px solid var(--admin-border); padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 class="admin-card-title" style="display: flex; align-items: center; gap: 8px;">
+                <span>Registered Staff &amp; Team Members</span>
+                <span id="teamUsersCountBadge" class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 11px; padding: 2px 8px; border-radius: 12px;">Loading...</span>
+              </h3>
+              <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 3px;">
+                Active accounts with login access to the PhonesDaddy admin portal.
+              </p>
+            </div>
+            <button type="button" onclick="openAddUserModal()" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+              ➕ Add New User
+            </button>
+          </div>
+
+          <!-- Team Table Alert -->
+          <div id="teamAlert" style="display: none; padding: 12px 16px; border-radius: var(--admin-radius); margin-bottom: 16px; font-weight: 600; font-size: 13px;"></div>
+
+          <!-- Table Container -->
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="admin-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding: 12px 16px;">Team Member</th>
+                  <th style="text-align: left; padding: 12px 16px;">Username</th>
+                  <th style="text-align: left; padding: 12px 16px;">Assigned Role &amp; Access</th>
+                  <th style="text-align: center; padding: 12px 16px;">Status</th>
+                  <th style="text-align: left; padding: 12px 16px;">Registered</th>
+                  <th style="text-align: right; padding: 12px 16px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teamUsersTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 36px 16px; color: #64748b;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">⏳</div>
+                    <div>Loading team members...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -1292,6 +1403,88 @@
       <div style="padding: 12px 20px; border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end;">
         <button type="button" onclick="closePreviewModal()" class="btn btn-outline btn-sm">Close</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Team Member Modal -->
+  <div class="preview-modal-overlay" id="userModal" style="display: none;">
+    <div class="preview-modal-content" style="max-width: 560px;">
+      <div style="padding: 16px 22px; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+        <div>
+          <h3 id="userModalTitle" style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0;">Add New Team Member</h3>
+          <p id="userModalSubtitle" style="font-size: 12px; color: #64748b; margin: 2px 0 0;">Create a new staff login and assign specific management rights.</p>
+        </div>
+        <button type="button" onclick="closeUserModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;" aria-label="Close">✕</button>
+      </div>
+
+      <form id="userModalForm" onsubmit="saveUserModal(event); return false;" style="margin: 0; display: flex; flex-direction: column;">
+        <input type="hidden" id="userModalId" value="">
+
+        <div style="padding: 22px; overflow-y: auto; max-height: calc(85vh - 140px);">
+          <!-- Modal Alert -->
+          <div id="userModalAlert" style="display: none; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; font-size: 13px; font-weight: 600;"></div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <!-- Display Name -->
+            <div style="grid-column: 1 / -1;">
+              <label class="form-label" for="userModalName" style="font-size: 12px; font-weight: 700; color: #334155;">Full Display Name <span style="color: #ef4444;">*</span></label>
+              <input type="text" id="userModalName" class="form-control" placeholder="e.g. John Doe (Tech Writer)" required>
+            </div>
+
+            <!-- Username -->
+            <div>
+              <label class="form-label" for="userModalUsername" style="font-size: 12px; font-weight: 700; color: #334155;">Username (Login ID) <span style="color: #ef4444;">*</span></label>
+              <input type="text" id="userModalUsername" class="form-control" placeholder="e.g. johndoe" required autocomplete="username">
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="form-label" for="userModalEmail" style="font-size: 12px; font-weight: 700; color: #334155;">Email Address</label>
+              <input type="email" id="userModalEmail" class="form-control" placeholder="e.g. john@example.com">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div style="margin-bottom: 16px;">
+            <label class="form-label" for="userModalPassword" style="font-size: 12px; font-weight: 700; color: #334155;">
+              <span id="userModalPwLabel">Password <span style="color: #ef4444;">*</span></span>
+            </label>
+            <div style="position: relative;">
+              <input type="password" id="userModalPassword" class="form-control" placeholder="Enter secure password (min 4 chars)" autocomplete="new-password">
+              <button type="button" onclick="toggleUserPwVisibility('userModalPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 14px;" aria-label="Toggle password">👁️</button>
+            </div>
+            <small id="userModalPwHelp" style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Must be at least 4 characters long.</small>
+          </div>
+
+          <!-- Role Selector -->
+          <div style="margin-bottom: 16px;">
+            <label class="form-label" for="userModalRole" style="font-size: 12px; font-weight: 700; color: #334155;">Assigned Role &amp; Permission Level <span style="color: #ef4444;">*</span></label>
+            <select id="userModalRole" class="form-control" style="font-weight: 600;" required>
+              <option value="writer">📝 Article Writer (Articles, News &amp; Categories only)</option>
+              <option value="phones">📱 Mobile Phone Manager (Phones, Specs &amp; Brands only)</option>
+              <option value="contributor">⚡ Contributor (Both Articles &amp; Mobiles)</option>
+              <option value="admin">👑 Administrator (Full Master Admin Privileges)</option>
+            </select>
+            <small style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">
+              Select the specific module access this user will have when logging in.
+            </small>
+          </div>
+
+          <!-- Status -->
+          <div style="margin-bottom: 8px;">
+            <label class="form-label" for="userModalStatus" style="font-size: 12px; font-weight: 700; color: #334155;">Account Status</label>
+            <select id="userModalStatus" class="form-control">
+              <option value="active">Active (Can log in)</option>
+              <option value="inactive">Inactive / Suspended (Login disabled)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="padding: 14px 22px; border-top: 1px solid var(--admin-border); background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" onclick="closeUserModal()" class="btn btn-outline btn-sm" style="padding: 8px 18px;">Cancel</button>
+          <button type="submit" id="btnSaveUserModal" class="btn btn-primary btn-sm" style="padding: 8px 22px; font-weight: 700;">💾 Save User</button>
+        </div>
+      </form>
     </div>
   </div>
 

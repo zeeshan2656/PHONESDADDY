@@ -15,22 +15,32 @@ class AuthController {
         return res.status(401).json({ success: false, message: 'Invalid username or password' });
       }
 
+      if (admin.status === 'inactive') {
+        return res.status(403).json({ success: false, message: 'This account has been deactivated. Please contact the administrator.' });
+      }
+
       const match = await bcrypt.compare(password, admin.password_hash);
       if (!match) {
         return res.status(401).json({ success: false, message: 'Invalid username or password' });
       }
 
-      // Establish session
+      // Establish session with role
       req.session.admin = {
         id: admin.id,
         username: admin.username,
-        name: admin.name
+        name: admin.name,
+        role: admin.role || 'admin'
       };
 
       return res.json({
         success: true,
         message: 'Login successful',
-        user: { id: admin.id, username: admin.username, name: admin.name }
+        user: { 
+          id: admin.id, 
+          username: admin.username, 
+          name: admin.name, 
+          role: admin.role || 'admin' 
+        }
       });
     } catch (err) {
       next(err);
@@ -50,6 +60,7 @@ class AuthController {
         console.error('Logout error:', err);
       }
       res.clearCookie('connect.sid');
+      res.clearCookie('phonesdaddy_session');
       return res.json({ success: true, message: 'Logged out successfully' });
     });
   }
@@ -76,6 +87,7 @@ class AuthController {
           id: admin.id,
           username: admin.username,
           name: admin.name,
+          role: admin.role || 'admin',
           current_password: admin.plain_password || 'admin123',
           created_at: admin.created_at
         }
@@ -125,9 +137,165 @@ class AuthController {
           id: updatedAdmin.id,
           username: updatedAdmin.username,
           name: updatedAdmin.name,
+          role: updatedAdmin.role || 'admin',
           current_password: updatedAdmin.plain_password || 'admin123'
         }
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * GET /api/admin/users
+   * List all staff accounts (Master Admin only)
+   */
+  static async listUsers(req, res, next) {
+    try {
+      const users = await AdminModel.getAllUsers();
+      return res.json({ success: true, data: users });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * POST /api/admin/users
+   * Create new user with specific role (Master Admin only)
+   */
+  static async createUser(req, res, next) {
+    try {
+      const { name, username, password, role = 'writer' } = req.body;
+
+      if (!name || !name.trim()) {
+        return res.status(400).json({ success: false, message: 'Full name is required.' });
+      }
+      if (!username || !username.trim()) {
+        return res.status(400).json({ success: false, message: 'Username is required.' });
+      }
+      if (!password || password.trim().length < 4) {
+        return res.status(400).json({ success: false, message: 'Password must be at least 4 characters long.' });
+      }
+
+      const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+      if (!cleanUsername) {
+        return res.status(400).json({ success: false, message: 'Username must contain valid letters or numbers.' });
+      }
+
+      const existing = await AdminModel.findByUsername(cleanUsername);
+      if (existing) {
+        return res.status(409).json({ success: false, message: `Username "${cleanUsername}" is already taken.` });
+      }
+
+      const validRoles = ['admin', 'writer', 'phones', 'contributor'];
+      const userRole = validRoles.includes(role) ? role : 'writer';
+
+      const password_hash = await bcrypt.hash(password.trim(), 10);
+      const plain_password = password.trim();
+
+      const newId = await AdminModel.createUser({
+        name: name.trim(),
+        username: cleanUsername,
+        password_hash,
+        plain_password,
+        role: userRole,
+        status: 'active'
+      });
+
+      const newUser = await AdminModel.findById(newId);
+
+      return res.status(201).json({
+        success: true,
+        message: `User "${cleanUsername}" created successfully.`,
+        data: newUser
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * PUT /api/admin/users/:id
+   * Update staff account
+   */
+  static async updateUser(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name, username, password, role, status } = req.body;
+
+      const user = await AdminModel.findById(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found.' });
+      }
+
+      const updateData = {};
+      if (name && name.trim()) updateData.name = name.trim();
+
+      if (username && username.trim()) {
+        const cleanUser = username.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+        if (cleanUser !== user.username) {
+          const existing = await AdminModel.findByUsername(cleanUser);
+          if (existing && existing.id !== Number(id)) {
+            return res.status(409).json({ success: false, message: `Username "${cleanUser}" is already taken.` });
+          }
+          updateData.username = cleanUser;
+        }
+      }
+
+      if (password && password.trim()) {
+        if (password.trim().length < 4) {
+          return res.status(400).json({ success: false, message: 'Password must be at least 4 characters.' });
+        }
+        updateData.password_hash = await bcrypt.hash(password.trim(), 10);
+        updateData.plain_password = password.trim();
+      }
+
+      if (role !== undefined) {
+        if (Number(id) === 1) {
+          updateData.role = 'admin'; // Master admin must stay admin
+        } else {
+          const validRoles = ['admin', 'writer', 'phones', 'contributor'];
+          if (validRoles.includes(role)) updateData.role = role;
+        }
+      }
+
+      if (status !== undefined) {
+        if (Number(id) === 1) {
+          updateData.status = 'active'; // Master admin cannot be deactivated
+        } else {
+          updateData.status = status === 'inactive' ? 'inactive' : 'active';
+        }
+      }
+
+      await AdminModel.updateUser(id, updateData);
+      const updated = await AdminModel.findById(id);
+
+      return res.json({
+        success: true,
+        message: 'User updated successfully.',
+        data: updated
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * DELETE /api/admin/users/:id
+   * Delete staff account (Master Admin only)
+   */
+  static async deleteUser(req, res, next) {
+    try {
+      const { id } = req.params;
+      if (Number(id) === 1) {
+        return res.status(403).json({ success: false, message: 'Master Administrator account cannot be deleted.' });
+      }
+      if (req.session && req.session.admin && req.session.admin.id === Number(id)) {
+        return res.status(400).json({ success: false, message: 'You cannot delete your own active account.' });
+      }
+
+      await AdminModel.deleteUser(id);
+      return res.json({ success: true, message: 'User deleted successfully.' });
     } catch (err) {
       next(err);
     }

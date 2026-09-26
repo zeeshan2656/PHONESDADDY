@@ -49,6 +49,7 @@ class SettingsModel {
         site_logo: '', // e.g. /uploads/branding/logo-xxx.png
         site_favicon: '', // e.g. /uploads/branding/favicon-xxx.ico
         footer_copyright: '© 2026 PhonesDaddy. All rights reserved. Clean, fast, and authentic mobile phone specifications.',
+        footer_about: 'Discover latest mobile phone prices in Pakistan, authentic technical specifications, camera benchmarks, battery life ratings, and fair side-by-side phone comparisons.',
 
         // Mobile Phone Ad Placements
         ad_phone_top: '',

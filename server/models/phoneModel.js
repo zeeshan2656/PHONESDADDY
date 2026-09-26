@@ -129,7 +129,7 @@ class PhoneModel {
 
     const [phoneRows] = await pool.query(querySql, [...params, parsedLimit, offset]);
 
-    // Fetch quick specs for each phone (Display, Camera, Battery, RAM)
+    // Fetch quick specs for each phone (Display, Camera, Battery, RAM, Chipset)
     if (phoneRows.length > 0) {
       const phoneIds = phoneRows.map(p => p.id);
       const [specRows] = await pool.query(`
@@ -137,11 +137,11 @@ class PhoneModel {
         FROM phone_specs
         WHERE phone_id IN (${phoneIds.map(() => '?').join(',')})
           AND (
-            (section = 'Display' AND spec_key = 'Size') OR
-            (section = 'Display' AND spec_key = 'Type') OR
-            (section = 'Main Camera' AND spec_key IN ('Main sensor', 'Camera configuration')) OR
-            (section = 'Battery' AND spec_key = 'Capacity') OR
-            (section = 'Memory' AND spec_key = 'RAM')
+            (section = 'Display' AND spec_key IN ('Size', 'Technology', 'Extra Features', 'Type')) OR
+            (section = 'Main Camera' AND spec_key IN ('Main', 'Main sensor', 'Camera configuration', 'Features')) OR
+            (section = 'Platform' AND spec_key IN ('Chipset', 'CPU')) OR
+            (section = 'Battery' AND spec_key IN ('Capacity', 'Type')) OR
+            (section = 'Memory' AND spec_key IN ('RAM', 'Built-in', 'Internal Storage', 'Internal'))
           )
       `, phoneIds);
 
@@ -149,21 +149,52 @@ class PhoneModel {
       const specsMap = {};
       for (const row of specRows) {
         if (!specsMap[row.phone_id]) specsMap[row.phone_id] = {};
-        if (row.section === 'Display' && row.spec_key === 'Size') {
-          // Extract display size (e.g. "6.8 inches")
-          specsMap[row.phone_id].display = row.spec_value.split(',')[0].trim();
-        } else if (row.section === 'Main Camera' && (row.spec_key === 'Main sensor' || row.spec_key === 'Camera configuration')) {
-          if (!specsMap[row.phone_id].camera) {
-            // Find MP in string (e.g. "200 MP" or "200MP")
-            const mpMatch = row.spec_value.match(/\d+\s*MP/i);
-            specsMap[row.phone_id].camera = mpMatch ? mpMatch[0] + ' Camera' : row.spec_value.split(',')[0];
+        const sm = specsMap[row.phone_id];
+
+        if (row.section === 'Display') {
+          if (row.spec_key === 'Size' && !sm.display) {
+            sm.display = row.spec_value.split(',')[0].trim();
+          } else if (row.spec_key === 'Extra Features' || row.spec_key === 'Technology') {
+            if (/120Hz/i.test(row.spec_value) && sm.display && !sm.display.includes('120Hz')) {
+              sm.display += ' • 120Hz';
+            } else if (/AMOLED|OLED/i.test(row.spec_value) && sm.display && !sm.display.includes('AMOLED') && !sm.display.includes('OLED')) {
+              sm.display += ' AMOLED';
+            }
           }
-        } else if (row.section === 'Battery' && row.spec_key === 'Capacity') {
-          const batMatch = row.spec_value.match(/\d+\s*mAh/i);
-          specsMap[row.phone_id].battery = batMatch ? batMatch[0] + ' Battery' : row.spec_value;
-        } else if (row.section === 'Memory' && row.spec_key === 'RAM') {
-          const ramMatch = row.spec_value.match(/\d+GB/i);
-          specsMap[row.phone_id].ram = ramMatch ? ramMatch[0] + ' RAM' : row.spec_value;
+        } else if (row.section === 'Main Camera') {
+          if (!sm.camera && (row.spec_key === 'Main' || row.spec_key === 'Main sensor' || row.spec_key === 'Camera configuration')) {
+            const mpMatch = row.spec_value.match(/(\d+\s*MP)/i);
+            const isDual = /dual/i.test(row.spec_value);
+            const isTriple = /triple/i.test(row.spec_value);
+            const isQuad = /quad/i.test(row.spec_value);
+            const config = isQuad ? 'Quad' : isTriple ? 'Triple' : isDual ? 'Dual' : '';
+            if (mpMatch) {
+              sm.camera = config ? `${mpMatch[1]} ${config} Camera` : `${mpMatch[1]} Camera`;
+            } else {
+              sm.camera = row.spec_value.split(',')[0].trim();
+            }
+          }
+        } else if (row.section === 'Platform') {
+          if (!sm.chipset && row.spec_key === 'Chipset') {
+            let chip = row.spec_value.replace(/\([^)]*\)/g, '').trim();
+            chip = chip.replace(/^Qualcomm\s+[A-Z0-9-]+\s+/i, '');
+            sm.chipset = chip.split(',')[0].trim();
+          }
+        } else if (row.section === 'Battery') {
+          if (!sm.battery && (row.spec_key === 'Capacity' || row.spec_key === 'Type')) {
+            const batMatch = row.spec_value.match(/\d+[\s,]*\d*\s*mAh/i);
+            sm.battery = batMatch ? batMatch[0].replace(/\s+/g, ' ') + ' Battery' : row.spec_value.trim();
+          }
+        } else if (row.section === 'Memory') {
+          if (!sm.ram) {
+            const ramMatch = row.spec_value.match(/(\d+(?:\/\d+)?\s*GB)\s*RAM/i);
+            if (ramMatch) {
+              sm.ram = ramMatch[1] + ' RAM';
+            } else {
+              const gbMatch = row.spec_value.match(/\b(\d+GB)\b/i);
+              if (gbMatch) sm.ram = gbMatch[1] + ' RAM';
+            }
+          }
         }
       }
 

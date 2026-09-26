@@ -2184,11 +2184,12 @@ function initSettings() {
     submitSettingsForm();
   });
 
-  // Settings Sub-Menu Navigation (Branding vs General vs Ad Placements vs Profile)
+  // Settings Sub-Menu Navigation (Branding vs General vs Ad Placements vs Profile vs Users)
   let initialSection = 'branding';
   if (window.location.hash === '#general') initialSection = 'general';
   else if (window.location.hash === '#ad-placements') initialSection = 'ads';
   else if (window.location.hash === '#profile') initialSection = 'profile';
+  else if (window.location.hash === '#users') initialSection = 'users';
   switchSettingsSection(initialSection);
 
   window.addEventListener('hashchange', () => {
@@ -2198,6 +2199,8 @@ function initSettings() {
       switchSettingsSection('ads');
     } else if (window.location.hash === '#profile') {
       switchSettingsSection('profile');
+    } else if (window.location.hash === '#users') {
+      switchSettingsSection('users');
     } else if (window.location.hash === '#general') {
       switchSettingsSection('general');
     }
@@ -2207,9 +2210,18 @@ function initSettings() {
   initBrandingEvents();
 }
 
+function safeSnippet(val) {
+  if (!val || typeof val !== 'string') return '';
+  try {
+    return 'b64:' + btoa(unescape(encodeURIComponent(val)));
+  } catch (e) {
+    return val;
+  }
+}
+
 async function loadSettingsData() {
   try {
-    const res = await fetch('/api/admin/settings');
+    const res = await fetch('/api/admin/settings', { credentials: 'same-origin' });
     const data = await res.json();
 
     if (data.success && data.settings) {
@@ -2348,53 +2360,67 @@ async function submitSettingsForm() {
     footer_copyright: (document.getElementById('footer_copyright') ? document.getElementById('footer_copyright').value : '').trim(),
     footer_about: (document.getElementById('footer_about') ? document.getElementById('footer_about').value : '').trim(),
 
-    // Head & Body Code Snippets
+    // Head & Body Code Snippets (Base64 safe encoded to prevent Hostinger ModSecurity WAF blocks)
     is_head_code_enabled: document.getElementById('is_head_code_enabled') ? document.getElementById('is_head_code_enabled').checked : true,
-    head_snippets: (document.getElementById('head_snippets') ? document.getElementById('head_snippets').value : '').trim(),
-    google_adsense_client: (document.getElementById('google_adsense_client') ? document.getElementById('google_adsense_client').value : '').trim(),
-    google_analytics_id: (document.getElementById('google_analytics_id') ? document.getElementById('google_analytics_id').value : '').trim(),
-    adsterra_code: (document.getElementById('adsterra_code') ? document.getElementById('adsterra_code').value : '').trim(),
+    head_snippets: safeSnippet(document.getElementById('head_snippets') ? document.getElementById('head_snippets').value.trim() : ''),
+    google_adsense_client: safeSnippet(document.getElementById('google_adsense_client') ? document.getElementById('google_adsense_client').value.trim() : ''),
+    google_analytics_id: safeSnippet(document.getElementById('google_analytics_id') ? document.getElementById('google_analytics_id').value.trim() : ''),
+    adsterra_code: safeSnippet(document.getElementById('adsterra_code') ? document.getElementById('adsterra_code').value.trim() : ''),
     is_body_code_enabled: document.getElementById('is_body_code_enabled') ? document.getElementById('is_body_code_enabled').checked : true,
-    body_snippets: (document.getElementById('body_snippets') ? document.getElementById('body_snippets').value : '').trim(),
+    body_snippets: safeSnippet(document.getElementById('body_snippets') ? document.getElementById('body_snippets').value.trim() : ''),
 
     // Mobile Phone Placements
-    ad_phone_top: (document.getElementById('ad_phone_top') ? document.getElementById('ad_phone_top').value : '').trim(),
+    ad_phone_top: safeSnippet(document.getElementById('ad_phone_top') ? document.getElementById('ad_phone_top').value.trim() : ''),
     ad_phone_top_enabled: document.getElementById('ad_phone_top_enabled') ? document.getElementById('ad_phone_top_enabled').checked : true,
-    ad_phone_mid: (document.getElementById('ad_phone_mid') ? document.getElementById('ad_phone_mid').value : '').trim(),
+    ad_phone_mid: safeSnippet(document.getElementById('ad_phone_mid') ? document.getElementById('ad_phone_mid').value.trim() : ''),
     ad_phone_mid_enabled: document.getElementById('ad_phone_mid_enabled') ? document.getElementById('ad_phone_mid_enabled').checked : true,
-    ad_phone_spec_2: (document.getElementById('ad_phone_spec_2') ? document.getElementById('ad_phone_spec_2').value : '').trim(),
+    ad_phone_spec_2: safeSnippet(document.getElementById('ad_phone_spec_2') ? document.getElementById('ad_phone_spec_2').value.trim() : ''),
     ad_phone_spec_2_enabled: document.getElementById('ad_phone_spec_2_enabled') ? document.getElementById('ad_phone_spec_2_enabled').checked : true,
-    ad_phone_bottom: (document.getElementById('ad_phone_bottom') ? document.getElementById('ad_phone_bottom').value : '').trim(),
+    ad_phone_bottom: safeSnippet(document.getElementById('ad_phone_bottom') ? document.getElementById('ad_phone_bottom').value.trim() : ''),
     ad_phone_bottom_enabled: document.getElementById('ad_phone_bottom_enabled') ? document.getElementById('ad_phone_bottom_enabled').checked : true,
 
     // GSMArena Sidebar Placements
-    ad_sidebar_top: (document.getElementById('ad_sidebar_top') ? document.getElementById('ad_sidebar_top').value : '').trim(),
+    ad_sidebar_top: safeSnippet(document.getElementById('ad_sidebar_top') ? document.getElementById('ad_sidebar_top').value.trim() : ''),
     ad_sidebar_top_enabled: document.getElementById('ad_sidebar_top_enabled') ? document.getElementById('ad_sidebar_top_enabled').checked : true,
-    ad_sidebar_bottom: (document.getElementById('ad_sidebar_bottom') ? document.getElementById('ad_sidebar_bottom').value : '').trim(),
+    ad_sidebar_bottom: safeSnippet(document.getElementById('ad_sidebar_bottom') ? document.getElementById('ad_sidebar_bottom').value.trim() : ''),
     ad_sidebar_bottom_enabled: document.getElementById('ad_sidebar_bottom_enabled') ? document.getElementById('ad_sidebar_bottom_enabled').checked : true,
 
     // News & Blog Article Placements
-    ad_article_top: (document.getElementById('ad_article_top') ? document.getElementById('ad_article_top').value : '').trim(),
+    ad_article_top: safeSnippet(document.getElementById('ad_article_top') ? document.getElementById('ad_article_top').value.trim() : ''),
     ad_article_top_enabled: document.getElementById('ad_article_top_enabled') ? document.getElementById('ad_article_top_enabled').checked : true,
-    ad_article_mid: (document.getElementById('ad_article_mid') ? document.getElementById('ad_article_mid').value : '').trim(),
+    ad_article_mid: safeSnippet(document.getElementById('ad_article_mid') ? document.getElementById('ad_article_mid').value.trim() : ''),
     ad_article_mid_enabled: document.getElementById('ad_article_mid_enabled') ? document.getElementById('ad_article_mid_enabled').checked : true,
-    ad_article_bottom: (document.getElementById('ad_article_bottom') ? document.getElementById('ad_article_bottom').value : '').trim(),
+    ad_article_bottom: safeSnippet(document.getElementById('ad_article_bottom') ? document.getElementById('ad_article_bottom').value.trim() : ''),
     ad_article_bottom_enabled: document.getElementById('ad_article_bottom_enabled') ? document.getElementById('ad_article_bottom_enabled').checked : true
   };
 
   setSaving(true);
 
   try {
+    // Use POST with same-origin credentials for LiteSpeed/Hostinger reverse proxy compatibility
     const res = await fetch('/api/admin/settings', {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    const contentType = res.headers.get('content-type') || '';
+    let data;
+    if (contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      if (res.status === 401 || res.status === 403) {
+        throw new Error('Admin session expired or access unauthorized. Please log in again.');
+      } else {
+        throw new Error(`Server returned status ${res.status}: ${text.substring(0, 100)}`);
+      }
+    }
 
     if (data.success) {
-      showSettingsAlert('Settings and Branding saved successfully! All public pages are now updated.', 'success');
+      showSettingsAlert('✅ Settings and Branding saved successfully! All public pages are now updated.', 'success');
+      showAdminToast('Settings and branding saved successfully!', 'success');
       currentBrandingState.site_name = payload.site_name || 'PhonesDaddy';
       currentBrandingState.site_tagline = payload.site_tagline;
       currentBrandingState.site_url = payload.site_url;
@@ -2405,10 +2431,12 @@ async function submitSettingsForm() {
       updateAdminSidebarBrand(currentBrandingState);
     } else {
       showSettingsAlert('❌ Error: ' + (data.message || 'Could not save settings.'), 'error');
+      showAdminToast('❌ ' + (data.message || 'Could not save settings.'), 'error');
     }
   } catch (err) {
     console.error('Save settings error:', err);
-    showSettingsAlert('❌ Network error while saving settings.', 'error');
+    showSettingsAlert('❌ ' + (err.message || 'Network error while saving settings.'), 'error');
+    showAdminToast('❌ ' + (err.message || 'Error saving settings.'), 'error');
   } finally {
     setSaving(false);
   }
@@ -2624,20 +2652,24 @@ function switchSettingsSection(section) {
   const secGen = document.getElementById('settingsSectionGeneral');
   const secAds = document.getElementById('settingsSectionAds');
   const secProf = document.getElementById('settingsSectionProfile');
+  const secUsers = document.getElementById('settingsSectionUsers');
   const tabBrand = document.getElementById('tabBtnBranding');
   const tabGen = document.getElementById('tabBtnGeneral');
   const tabAds = document.getElementById('tabBtnAds');
   const tabProf = document.getElementById('tabBtnProfile');
+  const tabUsers = document.getElementById('tabBtnUsers');
   const sideBrand = document.getElementById('sideNavBranding');
   const sideGen = document.getElementById('sideNavGeneral');
   const sideAds = document.getElementById('sideNavAds');
   const sideProf = document.getElementById('sideNavProfile');
+  const sideUsers = document.getElementById('sideNavUsers');
   const btnTestingAdsTop = document.getElementById('btnTestingAdsTop');
   const topbarTitle = document.getElementById('topbarTitle');
   const topbarSubtitle = document.getElementById('topbarSubtitle');
   const btnPreviewTop = document.getElementById('btnPreviewTop');
   const btnSaveSettingsTop = document.getElementById('btnSaveSettingsTop');
   const btnSaveProfileTop = document.getElementById('btnSaveProfileTop');
+  const btnAddUserTop = document.getElementById('btnAddUserTop');
   const settingsBottomActions = document.getElementById('settingsBottomActions');
 
   // Hide all sections first
@@ -2645,9 +2677,11 @@ function switchSettingsSection(section) {
   if (secGen) secGen.style.display = 'none';
   if (secAds) secAds.style.display = 'none';
   if (secProf) secProf.style.display = 'none';
+  if (secUsers) secUsers.style.display = 'none';
+  if (btnAddUserTop) btnAddUserTop.style.display = 'none';
 
   // Remove active from all tabs & side links
-  [tabBrand, tabGen, tabAds, tabProf, sideBrand, sideGen, sideAds, sideProf].forEach(el => el && el.classList.remove('active'));
+  [tabBrand, tabGen, tabAds, tabProf, tabUsers, sideBrand, sideGen, sideAds, sideProf, sideUsers].forEach(el => el && el.classList.remove('active'));
 
   if (section === 'branding') {
     if (secBrand) secBrand.style.display = 'block';
@@ -2692,6 +2726,22 @@ function switchSettingsSection(section) {
       history.replaceState(null, null, '#profile');
     }
     loadAdminProfile();
+  } else if (section === 'users') {
+    if (secUsers) secUsers.style.display = 'block';
+    if (tabUsers) tabUsers.classList.add('active');
+    if (sideUsers) sideUsers.classList.add('active');
+    if (btnTestingAdsTop) btnTestingAdsTop.style.display = 'none';
+    if (topbarTitle) topbarTitle.innerText = 'Team Members & Staff Access';
+    if (topbarSubtitle) topbarSubtitle.innerText = 'Manage staff accounts with specific roles: Article Writers, Mobile Phone Managers, or Full Administrators.';
+    if (btnPreviewTop) btnPreviewTop.style.display = 'none';
+    if (btnSaveSettingsTop) btnSaveSettingsTop.style.display = 'none';
+    if (btnSaveProfileTop) btnSaveProfileTop.style.display = 'none';
+    if (btnAddUserTop) btnAddUserTop.style.display = 'inline-flex';
+    if (settingsBottomActions) settingsBottomActions.style.display = 'none';
+    if (window.location.hash !== '#users') {
+      history.replaceState(null, null, '#users');
+    }
+    loadTeamUsers();
   } else {
     if (secGen) secGen.style.display = 'block';
     if (tabGen) tabGen.classList.add('active');
@@ -3321,6 +3371,453 @@ function showProfileAlert(msg, type = 'success') {
   setTimeout(() => {
     if (alertEl) alertEl.style.display = 'none';
   }, 4500);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Team & User Management Controller
+// ─────────────────────────────────────────────────────────────────────────────
+
+let teamUsersCache = [];
+
+async function loadTeamUsers() {
+  const tbody = document.getElementById('teamUsersTableBody');
+  const badge = document.getElementById('teamUsersCountBadge');
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="6" style="text-align: center; padding: 36px 16px; color: #64748b;">
+        <div style="font-size: 20px; margin-bottom: 8px;">⏳</div>
+        <div>Loading team members...</div>
+      </td>
+    </tr>
+  `;
+
+  try {
+    const res = await fetch('/api/admin/auth/users', { credentials: 'same-origin' });
+    if (res.status === 401 || res.status === 403) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 24px 16px; color: #ef4444; font-weight: 600;">
+            ⚠️ You must be logged in as Master Admin to view and manage team members.
+          </td>
+        </tr>
+      `;
+      if (badge) badge.innerText = 'Unauthorized';
+      return;
+    }
+
+    const data = await res.json();
+    if (data.success && Array.isArray(data.users)) {
+      teamUsersCache = data.users;
+      if (badge) badge.innerText = `${data.users.length} Account${data.users.length === 1 ? '' : 's'}`;
+      renderTeamUsersTable(data.users);
+    } else {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 20px;">Failed to load users: ${data.message || 'Unknown error'}</td></tr>`;
+    }
+  } catch (err) {
+    console.error('Failed to load team users:', err);
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 20px;">Network error loading team members.</td></tr>`;
+  }
+}
+
+function renderTeamUsersTable(users) {
+  const tbody = document.getElementById('teamUsersTableBody');
+  if (!tbody) return;
+
+  if (users.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 36px 16px; color: #64748b;">
+          No staff users found. Click "Add New Team Member" to register one.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  const roleMeta = {
+    admin: { label: 'Administrator', bg: '#f3e8ff', color: '#7e22ce', icon: '👑', desc: 'Full Access' },
+    writer: { label: 'Article Writer', bg: '#ecfdf5', color: '#047857', icon: '📝', desc: 'Blog & Categories' },
+    phones: { label: 'Mobile Manager', bg: '#e0f2fe', color: '#0369a1', icon: '📱', desc: 'Phones & Specs' },
+    contributor: { label: 'Contributor', bg: '#fef3c7', color: '#b45309', icon: '⚡', desc: 'Articles & Mobiles' }
+  };
+
+  tbody.innerHTML = users.map(u => {
+    const isMaster = Number(u.id) === 1;
+    const meta = roleMeta[u.role] || roleMeta.admin;
+    const initial = (u.name || u.username || 'U').charAt(0).toUpperCase();
+    const createdStr = u.created_at ? new Date(u.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Initial';
+    const isActive = u.status !== 'inactive';
+
+    return `
+      <tr style="border-bottom: 1px solid #f1f5f9;">
+        <td style="padding: 14px 16px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: ${meta.bg}; color: ${meta.color}; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 1px solid rgba(0,0,0,0.06);">
+              ${escapeHtml(initial)}
+            </div>
+            <div>
+              <div style="font-weight: 700; color: #0f172a; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                ${escapeHtml(u.name || u.username)}
+                ${isMaster ? '<span style="font-size: 10px; background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 4px; font-weight: 800;">MASTER</span>' : ''}
+              </div>
+              <div style="font-size: 12px; color: #64748b;">${escapeHtml(u.email || 'No email attached')}</div>
+            </div>
+          </div>
+        </td>
+        <td style="padding: 14px 16px; font-family: monospace; font-size: 13.5px; font-weight: 600; color: #334155;">
+          @${escapeHtml(u.username)}
+        </td>
+        <td style="padding: 14px 16px;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; background: ${meta.bg}; color: ${meta.color}; padding: 4px 10px; border-radius: 14px; font-size: 12px; font-weight: 700;">
+            <span>${meta.icon}</span>
+            <span>${meta.label}</span>
+          </span>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 3px;">${meta.desc}</div>
+        </td>
+        <td style="padding: 14px 16px; text-align: center;">
+          <span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; background: ${isActive ? '#ecfdf5' : '#fee2e2'}; color: ${isActive ? '#047857' : '#b91c1c'};">
+            ${isActive ? '● Active' : '○ Inactive'}
+          </span>
+        </td>
+        <td style="padding: 14px 16px; font-size: 12.5px; color: #64748b;">
+          ${escapeHtml(createdStr)}
+        </td>
+        <td style="padding: 14px 16px; text-align: right; white-space: nowrap;">
+          <button type="button" onclick="editUser(${u.id})" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 12px; margin-right: 6px;" title="Edit User">
+            ✏️ Edit
+          </button>
+          ${isMaster ? `
+            <button type="button" class="btn btn-sm" disabled style="padding: 4px 10px; font-size: 12px; opacity: 0.4; cursor: not-allowed; background: #e2e8f0; color: #94a3b8;" title="Master Admin cannot be deleted">
+              🔒 Master
+            </button>
+          ` : `
+            <button type="button" onclick="deleteUser(${u.id}, '${escapeHtml(u.username)}')" class="btn btn-sm" style="padding: 4px 10px; font-size: 12px; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;" title="Delete User">
+              🗑️ Delete
+            </button>
+          `}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openAddUserModal() {
+  const modal = document.getElementById('userModal');
+  const form = document.getElementById('userModalForm');
+  const alertEl = document.getElementById('userModalAlert');
+  const title = document.getElementById('userModalTitle');
+  const subtitle = document.getElementById('userModalSubtitle');
+  const idInput = document.getElementById('userModalId');
+  const nameInput = document.getElementById('userModalName');
+  const unInput = document.getElementById('userModalUsername');
+  const emailInput = document.getElementById('userModalEmail');
+  const pwInput = document.getElementById('userModalPassword');
+  const roleSelect = document.getElementById('userModalRole');
+  const statusSelect = document.getElementById('userModalStatus');
+  const pwLabel = document.getElementById('userModalPwLabel');
+  const pwHelp = document.getElementById('userModalPwHelp');
+
+  if (!modal) return;
+
+  if (form) form.reset();
+  if (alertEl) alertEl.style.display = 'none';
+  if (idInput) idInput.value = '';
+  if (title) title.innerText = 'Add New Team Member';
+  if (subtitle) subtitle.innerText = 'Create a new staff login and assign specific management rights.';
+  if (unInput) unInput.disabled = false;
+  if (pwLabel) pwLabel.innerHTML = 'Password <span style="color: #ef4444;">*</span>';
+  if (pwInput) {
+    pwInput.required = true;
+    pwInput.placeholder = 'Enter secure password (min 4 chars)';
+  }
+  if (pwHelp) pwHelp.innerText = 'Must be at least 4 characters long.';
+  if (roleSelect) {
+    roleSelect.value = 'writer';
+    roleSelect.disabled = false;
+  }
+  if (statusSelect) {
+    statusSelect.value = 'active';
+    statusSelect.disabled = false;
+  }
+
+  modal.style.display = 'flex';
+  if (nameInput) nameInput.focus();
+}
+
+function editUser(userId) {
+  const user = teamUsersCache.find(u => Number(u.id) === Number(userId));
+  if (!user) {
+    showAdminToast('User not found in cache. Refreshing...', 'error');
+    loadTeamUsers();
+    return;
+  }
+
+  const modal = document.getElementById('userModal');
+  const alertEl = document.getElementById('userModalAlert');
+  const title = document.getElementById('userModalTitle');
+  const subtitle = document.getElementById('userModalSubtitle');
+  const idInput = document.getElementById('userModalId');
+  const nameInput = document.getElementById('userModalName');
+  const unInput = document.getElementById('userModalUsername');
+  const emailInput = document.getElementById('userModalEmail');
+  const pwInput = document.getElementById('userModalPassword');
+  const roleSelect = document.getElementById('userModalRole');
+  const statusSelect = document.getElementById('userModalStatus');
+  const pwLabel = document.getElementById('userModalPwLabel');
+  const pwHelp = document.getElementById('userModalPwHelp');
+
+  if (!modal) return;
+
+  if (alertEl) alertEl.style.display = 'none';
+  if (idInput) idInput.value = user.id;
+  if (title) title.innerText = `Edit Team Member: @${user.username}`;
+  if (subtitle) subtitle.innerText = 'Update profile information, change assigned role, or set a new password.';
+  if (nameInput) nameInput.value = user.name || '';
+  if (unInput) {
+    unInput.value = user.username || '';
+    // Prevent changing username of master admin ID 1
+    unInput.disabled = Number(user.id) === 1;
+  }
+  if (emailInput) emailInput.value = user.email || '';
+  if (pwInput) {
+    pwInput.value = '';
+    pwInput.required = false;
+    pwInput.placeholder = 'Leave blank to keep current password unchanged';
+  }
+  if (pwLabel) pwLabel.innerHTML = 'New Password (Optional)';
+  if (pwHelp) pwHelp.innerText = 'Leave empty to keep existing password unchanged.';
+  if (roleSelect) {
+    roleSelect.value = user.role || 'writer';
+    // Master admin ID 1 role cannot be changed from admin
+    if (Number(user.id) === 1) {
+      roleSelect.value = 'admin';
+      roleSelect.disabled = true;
+    } else {
+      roleSelect.disabled = false;
+    }
+  }
+  if (statusSelect) {
+    statusSelect.value = user.status || 'active';
+    // Master admin cannot be deactivated
+    statusSelect.disabled = Number(user.id) === 1;
+  }
+
+  modal.style.display = 'flex';
+}
+
+function closeUserModal() {
+  const modal = document.getElementById('userModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function saveUserModal(e) {
+  if (e) e.preventDefault();
+
+  const id = document.getElementById('userModalId')?.value;
+  const name = document.getElementById('userModalName')?.value?.trim();
+  const username = document.getElementById('userModalUsername')?.value?.trim();
+  const email = document.getElementById('userModalEmail')?.value?.trim();
+  const password = document.getElementById('userModalPassword')?.value?.trim();
+  const role = document.getElementById('userModalRole')?.value;
+  const status = document.getElementById('userModalStatus')?.value;
+  const btn = document.getElementById('btnSaveUserModal');
+
+  if (!name || !username) {
+    showUserModalAlert('Full Display Name and Username are required.', 'error');
+    return;
+  }
+
+  if (!id && (!password || password.length < 4)) {
+    showUserModalAlert('Password is required for new users and must be at least 4 characters.', 'error');
+    return;
+  }
+
+  if (password && password.length < 4) {
+    showUserModalAlert('Password must be at least 4 characters long.', 'error');
+    return;
+  }
+
+  const payload = {
+    name,
+    username,
+    email,
+    role: role || 'writer',
+    status: status || 'active'
+  };
+  if (password) {
+    payload.password = password;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = '⏳ Saving...';
+  }
+
+  try {
+    const isEdit = Boolean(id);
+    const url = isEdit ? `/api/admin/auth/users/${id}` : '/api/admin/auth/users';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      closeUserModal();
+      showTeamAlert(`✅ User @${username} ${isEdit ? 'updated' : 'created'} successfully!`, 'success');
+      showAdminToast(`User @${username} ${isEdit ? 'updated' : 'created'}!`, 'success');
+      loadTeamUsers();
+    } else {
+      showUserModalAlert(`❌ ${data.message || 'Failed to save user.'}`, 'error');
+    }
+  } catch (err) {
+    console.error('Error saving user:', err);
+    showUserModalAlert('❌ Network error saving user.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = '💾 Save User';
+    }
+  }
+}
+
+async function deleteUser(userId, username) {
+  if (Number(userId) === 1) {
+    alert('Master Administrator account cannot be deleted.');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to permanently delete the staff user "@${username}"? They will immediately lose admin access.`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/admin/auth/users/${userId}`, {
+      method: 'DELETE',
+      credentials: 'same-origin'
+    });
+    const data = await res.json();
+    if (data.success) {
+      showTeamAlert(`✅ User @${username} has been deleted.`, 'success');
+      showAdminToast(`User @${username} deleted.`, 'info');
+      loadTeamUsers();
+    } else {
+      showTeamAlert(`❌ ${data.message || 'Failed to delete user.'}`, 'error');
+      showAdminToast(`❌ ${data.message || 'Failed to delete user.'}`, 'error');
+    }
+  } catch (err) {
+    console.error('Failed to delete user:', err);
+    showTeamAlert('❌ Network error while deleting user.', 'error');
+  }
+}
+
+function toggleUserPwVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btn) btn.innerText = '🙈';
+  } else {
+    input.type = 'password';
+    if (btn) btn.innerText = '👁️';
+  }
+}
+
+function showTeamAlert(msg, type = 'success') {
+  const el = document.getElementById('teamAlert');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerText = msg;
+  if (type === 'error') {
+    el.style.background = '#fee2e2';
+    el.style.color = '#991b1b';
+    el.style.border = '1px solid #f87171';
+  } else {
+    el.style.background = '#ecfdf5';
+    el.style.color = '#065f46';
+    el.style.border = '1px solid #34d399';
+  }
+  setTimeout(() => {
+    if (el) el.style.display = 'none';
+  }, 4500);
+}
+
+function showUserModalAlert(msg, type = 'error') {
+  const el = document.getElementById('userModalAlert');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerText = msg;
+  if (type === 'error') {
+    el.style.background = '#fee2e2';
+    el.style.color = '#991b1b';
+    el.style.border = '1px solid #f87171';
+  } else {
+    el.style.background = '#ecfdf5';
+    el.style.color = '#065f46';
+    el.style.border = '1px solid #34d399';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Role-Based Navigation & UI Access Controller
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function initRoleAccessUI() {
+  try {
+    const res = await fetch('/api/admin/auth/check', { credentials: 'same-origin' });
+    const data = await res.json();
+
+    if (!data.authenticated || !data.user) {
+      return;
+    }
+
+    const user = data.user;
+    window.currentAdminUser = user;
+
+    // Update sidebar footer
+    const footerWrap = document.querySelector('.admin-sidebar-footer span');
+    if (footerWrap) {
+      let roleLabel = 'Admin';
+      if (user.role === 'writer') roleLabel = 'Article Writer';
+      else if (user.role === 'phones') roleLabel = 'Mobile Manager';
+      else if (user.role === 'contributor') roleLabel = 'Contributor';
+      footerWrap.innerHTML = `Logged in as <strong>${escapeHtml(user.displayName || user.username)}</strong> <span style="font-size: 11px; opacity: 0.85;">(${roleLabel})</span>`;
+    }
+
+    // Role-based sidebar menu visibility:
+    const phonesLink = document.querySelector('.admin-nav a[href="/admin/phones"]')?.closest('li');
+    const brandsLink = document.querySelector('.admin-nav a[href="/admin/brands"]')?.closest('li');
+    const newsLink = document.querySelector('.admin-nav a[href="/admin/news"]')?.closest('li');
+    const categoriesLink = document.querySelector('.admin-nav a[href="/admin/categories"]')?.closest('li');
+    const pagesLink = document.querySelector('.admin-nav a[href="/admin/pages"]')?.closest('li');
+    const settingsItem = document.getElementById('navSettingsDropdown');
+
+    if (user.role === 'writer') {
+      // Writer can only edit news and categories
+      if (phonesLink) phonesLink.style.display = 'none';
+      if (brandsLink) brandsLink.style.display = 'none';
+      if (pagesLink) pagesLink.style.display = 'none';
+      if (settingsItem) settingsItem.style.display = 'none';
+    } else if (user.role === 'phones') {
+      // Phones manager can only edit phones and brands
+      if (newsLink) newsLink.style.display = 'none';
+      if (categoriesLink) categoriesLink.style.display = 'none';
+      if (pagesLink) pagesLink.style.display = 'none';
+      if (settingsItem) settingsItem.style.display = 'none';
+    } else if (user.role === 'contributor') {
+      // Contributor can edit both phones and news, but not site settings
+      if (pagesLink) pagesLink.style.display = 'none';
+      if (settingsItem) settingsItem.style.display = 'none';
+    }
+  } catch (err) {
+    // Non-fatal if check fails
+  }
 }
 
 function insertDummyAds() {
@@ -3965,10 +4462,19 @@ window.removeLogoFile = removeLogoFile;
 window.handleFaviconSelect = handleFaviconSelect;
 window.triggerFaviconUpload = triggerFaviconUpload;
 window.removeFaviconFile = removeFaviconFile;
+window.openAddUserModal = openAddUserModal;
+window.editUser = editUser;
+window.deleteUser = deleteUser;
+window.closeUserModal = closeUserModal;
+window.saveUserModal = saveUserModal;
+window.toggleUserPwVisibility = toggleUserPwVisibility;
+window.loadTeamUsers = loadTeamUsers;
+window.initRoleAccessUI = initRoleAccessUI;
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNavigation();
   initSettingsDropdown();
+  initRoleAccessUI();
   initLoginForm();
   initDashboard();
   initPhonesList();

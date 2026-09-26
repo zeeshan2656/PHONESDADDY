@@ -71,36 +71,49 @@ class SettingsController {
       if (site_description !== undefined) payload.site_description = String(site_description || '').trim();
       if (site_url !== undefined) payload.site_url = String(site_url || '').trim().replace(/\/+$/, '');
       if (footer_copyright !== undefined) payload.footer_copyright = String(footer_copyright || '').trim();
+      if (req.body.footer_about !== undefined) payload.footer_about = String(req.body.footer_about || '').trim();
+
+      // Helper to decode safe base64-encoded snippets to bypass Hostinger ModSecurity false positives
+      const decodeSnippet = (val) => {
+        if (typeof val === 'string' && val.startsWith('b64:')) {
+          try {
+            return Buffer.from(val.slice(4), 'base64').toString('utf8').trim();
+          } catch (_) {
+            return val.trim();
+          }
+        }
+        return typeof val === 'string' ? val.trim() : '';
+      };
 
       // Snippet & Code fields
-      if (head_snippets !== undefined) payload.head_snippets = String(head_snippets || '').trim();
+      if (head_snippets !== undefined) payload.head_snippets = decodeSnippet(head_snippets);
       if (is_head_code_enabled !== undefined) payload.is_head_code_enabled = is_head_code_enabled ? '1' : '0';
       if (google_analytics_id !== undefined) payload.google_analytics_id = String(google_analytics_id || '').trim();
       if (google_adsense_client !== undefined) payload.google_adsense_client = String(google_adsense_client || '').trim();
-      if (adsterra_code !== undefined) payload.adsterra_code = String(adsterra_code || '').trim();
-      if (body_snippets !== undefined) payload.body_snippets = String(body_snippets || '').trim();
+      if (adsterra_code !== undefined) payload.adsterra_code = decodeSnippet(adsterra_code);
+      if (body_snippets !== undefined) payload.body_snippets = decodeSnippet(body_snippets);
       if (is_body_code_enabled !== undefined) payload.is_body_code_enabled = is_body_code_enabled ? '1' : '0';
 
       // Ad placement slots
-      if (ad_phone_top !== undefined) payload.ad_phone_top = String(ad_phone_top || '').trim();
+      if (ad_phone_top !== undefined) payload.ad_phone_top = decodeSnippet(ad_phone_top);
       if (ad_phone_top_enabled !== undefined) payload.ad_phone_top_enabled = ad_phone_top_enabled ? '1' : '0';
-      if (ad_phone_mid !== undefined) payload.ad_phone_mid = String(ad_phone_mid || '').trim();
+      if (ad_phone_mid !== undefined) payload.ad_phone_mid = decodeSnippet(ad_phone_mid);
       if (ad_phone_mid_enabled !== undefined) payload.ad_phone_mid_enabled = ad_phone_mid_enabled ? '1' : '0';
-      if (ad_phone_spec_2 !== undefined) payload.ad_phone_spec_2 = String(ad_phone_spec_2 || '').trim();
+      if (ad_phone_spec_2 !== undefined) payload.ad_phone_spec_2 = decodeSnippet(ad_phone_spec_2);
       if (ad_phone_spec_2_enabled !== undefined) payload.ad_phone_spec_2_enabled = ad_phone_spec_2_enabled ? '1' : '0';
-      if (ad_phone_bottom !== undefined) payload.ad_phone_bottom = String(ad_phone_bottom || '').trim();
+      if (ad_phone_bottom !== undefined) payload.ad_phone_bottom = decodeSnippet(ad_phone_bottom);
       if (ad_phone_bottom_enabled !== undefined) payload.ad_phone_bottom_enabled = ad_phone_bottom_enabled ? '1' : '0';
 
-      if (ad_sidebar_top !== undefined) payload.ad_sidebar_top = String(ad_sidebar_top || '').trim();
+      if (ad_sidebar_top !== undefined) payload.ad_sidebar_top = decodeSnippet(ad_sidebar_top);
       if (ad_sidebar_top_enabled !== undefined) payload.ad_sidebar_top_enabled = ad_sidebar_top_enabled ? '1' : '0';
-      if (ad_sidebar_bottom !== undefined) payload.ad_sidebar_bottom = String(ad_sidebar_bottom || '').trim();
+      if (ad_sidebar_bottom !== undefined) payload.ad_sidebar_bottom = decodeSnippet(ad_sidebar_bottom);
       if (ad_sidebar_bottom_enabled !== undefined) payload.ad_sidebar_bottom_enabled = ad_sidebar_bottom_enabled ? '1' : '0';
 
-      if (ad_article_top !== undefined) payload.ad_article_top = String(ad_article_top || '').trim();
+      if (ad_article_top !== undefined) payload.ad_article_top = decodeSnippet(ad_article_top);
       if (ad_article_top_enabled !== undefined) payload.ad_article_top_enabled = ad_article_top_enabled ? '1' : '0';
-      if (ad_article_mid !== undefined) payload.ad_article_mid = String(ad_article_mid || '').trim();
+      if (ad_article_mid !== undefined) payload.ad_article_mid = decodeSnippet(ad_article_mid);
       if (ad_article_mid_enabled !== undefined) payload.ad_article_mid_enabled = ad_article_mid_enabled ? '1' : '0';
-      if (ad_article_bottom !== undefined) payload.ad_article_bottom = String(ad_article_bottom || '').trim();
+      if (ad_article_bottom !== undefined) payload.ad_article_bottom = decodeSnippet(ad_article_bottom);
       if (ad_article_bottom_enabled !== undefined) payload.ad_article_bottom_enabled = ad_article_bottom_enabled ? '1' : '0';
 
       await SettingsModel.updateSettings(payload);

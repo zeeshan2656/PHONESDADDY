@@ -7,7 +7,12 @@ const BrandModel = require('../models/brandModel');
 const SettingsModel = require('../models/settingsModel');
 const NewsModel = require('../models/newsModel');
 const PageModel = require('../models/pageModel');
-const { requireAdminAuth } = require('../middleware/auth');
+const { 
+  requireAdminAuth, 
+  requireMasterAdmin, 
+  requirePhonePermission, 
+  requireArticlePermission 
+} = require('../middleware/auth');
 
 const viewsDir = path.join(__dirname, '../../views');
 const adminDir = path.join(__dirname, '../../admin');
@@ -505,38 +510,41 @@ router.get('/admin/dashboard', requireAdminAuth, (req, res) => {
   res.sendFile(path.join(adminDir, 'dashboard.html'));
 });
 
-router.get('/admin/phones', requireAdminAuth, (req, res) => {
+// Mobile Phones & Brands Management
+router.get('/admin/phones', requirePhonePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'phones.html'));
 });
 
-router.get('/admin/phones/new', requireAdminAuth, (req, res) => {
+router.get('/admin/phones/new', requirePhonePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'phone-form.html'));
 });
 
-router.get('/admin/phones/edit/:id', requireAdminAuth, (req, res) => {
+router.get('/admin/phones/edit/:id', requirePhonePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'phone-form.html'));
 });
 
-router.get('/admin/brands', requireAdminAuth, (req, res) => {
+router.get('/admin/brands', requirePhonePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'brands.html'));
 });
 
-router.get('/admin/news', requireAdminAuth, (req, res) => {
+// Articles & Blog Writing
+router.get('/admin/news', requireArticlePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'news.html'));
 });
 
-router.get('/admin/news/new', requireAdminAuth, (req, res) => {
+router.get('/admin/news/new', requireArticlePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'news-form.html'));
 });
 
-router.get('/admin/news/edit/:id', requireAdminAuth, (req, res) => {
+router.get('/admin/news/edit/:id', requireArticlePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'news-form.html'));
 });
 
-router.get('/admin/categories', requireAdminAuth, (req, res) => {
+router.get('/admin/categories', requireArticlePermission, (req, res) => {
   res.sendFile(path.join(adminDir, 'categories.html'));
 });
 
+// Static Pages & Customer Reviews
 router.get('/admin/pages', requireAdminAuth, (req, res) => {
   res.sendFile(path.join(adminDir, 'pages.html'));
 });
@@ -549,16 +557,22 @@ router.get('/admin/pages/edit/:id', requireAdminAuth, (req, res) => {
   res.sendFile(path.join(adminDir, 'page-form.html'));
 });
 
-router.get('/admin/settings', requireAdminAuth, (req, res) => {
+router.get('/admin/reviews', requireAdminAuth, (req, res) => {
+  res.sendFile(path.join(adminDir, 'reviews.html'));
+});
+
+// Site Settings & Team/User Management (Master Admin only)
+router.get('/admin/settings', requireMasterAdmin, (req, res) => {
   res.sendFile(path.join(adminDir, 'settings.html'));
 });
 
-router.get('/admin/profile', requireAdminAuth, (req, res) => {
-  res.sendFile(path.join(adminDir, 'profile.html'));
+router.get('/admin/users', requireMasterAdmin, (req, res) => {
+  res.redirect('/admin/settings#users');
 });
 
-router.get('/admin/reviews', requireAdminAuth, (req, res) => {
-  res.sendFile(path.join(adminDir, 'reviews.html'));
+// Staff / Admin Profile
+router.get('/admin/profile', requireAdminAuth, (req, res) => {
+  res.sendFile(path.join(adminDir, 'profile.html'));
 });
 
 function escapeHtml(str) {
