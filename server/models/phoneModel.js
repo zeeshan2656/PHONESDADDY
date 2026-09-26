@@ -585,6 +585,15 @@ class PhoneModel {
   }
 
   /**
+   * Delete multiple phones in bulk
+   */
+  static async deletePhones(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const [res] = await pool.query(`DELETE FROM phones WHERE id IN (?)`, [ids]);
+    return res.affectedRows;
+  }
+
+  /**
    * Fast global search for auto-complete dropdown
    */
   static async searchPhones(query, limit = 8) {

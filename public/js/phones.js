@@ -229,10 +229,12 @@ function createPhoneCardHtml(phone) {
           <h3 class="phone-card-title">${escapeHtml(phone.name)}</h3>
         </a>
         <div class="phone-card-price">${phone.price > 0 ? formatPKR(phone.price) : 'Rumored Price'}</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11.5px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 6px;">
-          <span>${ICONS.eye} ${(phone.views || 0).toLocaleString()}</span>
-          <span style="font-weight: 600; color: ${phone.review_count > 0 ? '#0d9488' : '#94a3b8'};">
-            ${ICONS.comment} ${phone.review_count || 0} ${phone.review_count === 1 ? 'review' : 'reviews'}
+        <div class="phone-card-stats-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 8px; font-size: 11.5px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 6px;">
+          <span style="display: inline-flex; align-items: center; gap: 4px;" title="${(phone.views || 0).toLocaleString()} views">
+            ${ICONS.eye} <span>${(phone.views || 0).toLocaleString()}</span>
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: ${phone.review_count > 0 ? '#0d9488' : '#94a3b8'};" title="${(phone.review_count || 0).toLocaleString()} reviews">
+            ${ICONS.comment} <span>${(phone.review_count || 0).toLocaleString()}</span>
           </span>
         </div>
       </div>
@@ -296,6 +298,27 @@ function handleQuickCompare(slug) {
   } else {
     alert('Added to compare! Select 1 more phone to compare.');
   }
+}
+
+// Mobile Filter Sidebar & Collapsible Accordion Handlers
+function toggleMobileFilterSidebar() {
+  const sidebar = document.getElementById('filterSidebar');
+  const stateText = document.getElementById('mobileFilterStateText');
+  if (!sidebar) return;
+
+  sidebar.classList.toggle('mobile-open');
+  const isOpen = sidebar.classList.contains('mobile-open');
+  if (stateText) {
+    stateText.innerHTML = isOpen ? 'Tap to Close ▴' : 'Tap to Open ▾';
+  }
+}
+
+function toggleFilterAccordion(groupId) {
+  // Only toggle accordion collapse on mobile / small screens (window width <= 768px)
+  const group = document.getElementById(groupId);
+  if (!group) return;
+
+  group.classList.toggle('is-expanded');
 }
 
 document.addEventListener('DOMContentLoaded', initCatalog);

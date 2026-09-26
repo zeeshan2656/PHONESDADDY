@@ -16,6 +16,7 @@ router.get('/:id', PhoneController.getById);
 router.post('/fetch-external-specs', requirePhonePermission, PhoneController.fetchExternalSpecs);
 router.post('/', requirePhonePermission, upload.single('image'), PhoneController.create);
 router.put('/:id', requirePhonePermission, upload.single('image'), PhoneController.update);
+router.post('/bulk-delete', requirePhonePermission, PhoneController.bulkDeletePhones);
 router.delete('/:id', requirePhonePermission, PhoneController.deletePhone);
 
 module.exports = router;

@@ -257,11 +257,27 @@ async function initDashboard() {
 
       // Render Recent Phones
       if (recentTable) {
+        const selectAllRecent = document.getElementById('selectAllRecentPhones');
+        if (selectAllRecent) {
+          selectAllRecent.checked = false;
+          selectAllRecent.indeterminate = false;
+          selectAllRecent.onchange = () => {
+            const chks = document.querySelectorAll('.recent-phone-select-chk');
+            chks.forEach(c => { c.checked = selectAllRecent.checked; });
+            updateRecentPhoneBulkUI();
+          };
+        }
+        const recentBulkBar = document.getElementById('recentPhonesBulkActionBar');
+        if (recentBulkBar) recentBulkBar.style.display = 'none';
+
         if (!recentPhones || recentPhones.length === 0) {
-          recentTable.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">No phones added yet. <a href="/admin/phones/new" class="btn btn-primary btn-sm" style="margin-left: 10px;">+ Add First Phone</a></td></tr>`;
+          recentTable.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 24px;">No phones added yet. <a href="/admin/phones/new" class="btn btn-primary btn-sm" style="margin-left: 10px;">+ Add First Phone</a></td></tr>`;
         } else {
           recentTable.innerHTML = recentPhones.map(p => `
             <tr>
+              <td style="text-align: center;">
+                <input type="checkbox" class="recent-phone-select-chk" value="${p.id}" onchange="updateRecentPhoneBulkUI()" style="cursor: pointer; width: 16px; height: 16px; accent-color: #0d9488;">
+              </td>
               <td>
                 <img src="${p.image || '/images/placeholder.svg'}" alt="${escapeHtml(p.name)}" style="width: 38px; height: 46px; object-fit: contain; background: #f8fafc; border-radius: 4px; padding: 2px; border: 1px solid #e2e8f0;">
               </td>
@@ -421,6 +437,59 @@ async function loadDashboardFallback(recentTable, brandsTable) {
   }
 }
 
+function updateRecentPhoneBulkUI() {
+  const checkboxes = document.querySelectorAll('.recent-phone-select-chk');
+  const checked = document.querySelectorAll('.recent-phone-select-chk:checked');
+  const bulkBar = document.getElementById('recentPhonesBulkActionBar');
+  const countSpan = document.getElementById('recentPhonesBulkCount');
+  const selectAll = document.getElementById('selectAllRecentPhones');
+
+  if (selectAll && checkboxes.length > 0) {
+    selectAll.checked = checked.length === checkboxes.length;
+    selectAll.indeterminate = checked.length > 0 && checked.length < checkboxes.length;
+  }
+
+  if (bulkBar && countSpan) {
+    if (checked.length > 0) {
+      bulkBar.style.display = 'inline-flex';
+      countSpan.innerText = `${checked.length} selected`;
+    } else {
+      bulkBar.style.display = 'none';
+    }
+  }
+}
+
+async function handleBulkDeleteRecentPhones() {
+  const checked = Array.from(document.querySelectorAll('.recent-phone-select-chk:checked')).map(cb => cb.value);
+  if (checked.length === 0) {
+    alert('Please select at least one phone to delete.');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to permanently delete ${checked.length} selected smartphone(s)?\n\nThis will remove the phones from MySQL database.`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/phones/bulk-delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: checked })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showAdminToast(`Successfully deleted ${checked.length} phone(s)!`);
+      initDashboard();
+    } else {
+      alert(json.message || 'Error deleting selected phones');
+    }
+  } catch (err) {
+    console.error('Recent phones bulk delete error:', err);
+    alert('Failed to delete selected phones.');
+  }
+}
+
+
 
 // 4. Admin Phones Table & Advanced Search Suite
 async function initPhonesList() {
@@ -433,7 +502,17 @@ async function initPhonesList() {
   // 2. Setup Filter Event Listeners
   setupAdminPhoneFilterListeners();
 
-  // 3. Initial Load
+  // 3. Setup Select All Checkbox
+  const selectAll = document.getElementById('selectAllPhones');
+  if (selectAll) {
+    selectAll.addEventListener('change', () => {
+      const checkboxes = document.querySelectorAll('.phone-select-chk');
+      checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
+      updatePhoneBulkUI();
+    });
+  }
+
+  // 4. Initial Load
   loadAdminPhones();
 }
 
@@ -575,7 +654,16 @@ async function loadAdminPhones() {
   const countBadge = document.getElementById('adminPhonesCountBadge');
   if (!tbody) return;
 
-  tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 24px;">Loading phones...</td></tr>`;
+  // Reset select-all and bulk action bar on load
+  const selectAll = document.getElementById('selectAllPhones');
+  if (selectAll) {
+    selectAll.checked = false;
+    selectAll.indeterminate = false;
+  }
+  const bulkBar = document.getElementById('phoneBulkActionBar');
+  if (bulkBar) bulkBar.style.display = 'none';
+
+  tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #64748b; padding: 24px;">Loading phones...</td></tr>`;
 
   try {
     const params = new URLSearchParams();
@@ -594,7 +682,7 @@ async function loadAdminPhones() {
     const json = await res.json();
 
     if (!json.success || !json.data || json.data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 30px;">No phones match the current filters.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #64748b; padding: 30px;">No phones match the current filters.</td></tr>`;
       if (countBadge) countBadge.innerText = '0 phones found';
       renderAdminPagination({ total: 0, page: 1, limit: adminPhoneFilters.limit, totalPages: 0 });
       return;
@@ -606,6 +694,9 @@ async function loadAdminPhones() {
 
     tbody.innerHTML = json.data.map(p => `
       <tr>
+        <td style="text-align: center;">
+          <input type="checkbox" class="phone-select-chk" value="${p.id}" onchange="updatePhoneBulkUI()" style="cursor: pointer; width: 16px; height: 16px; accent-color: #0d9488;">
+        </td>
         <td>
           <img src="${p.image || '/images/placeholder.svg'}" style="width: 38px; height: 46px; object-fit: contain; background: #f8fafc; border-radius: 4px; padding: 2px; border: 1px solid #e2e8f0;">
         </td>
@@ -650,7 +741,59 @@ async function loadAdminPhones() {
     renderAdminPagination(json.pagination);
   } catch (err) {
     console.error('Error fetching admin phones:', err);
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #dc2626; padding: 20px;">Failed to load phones.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #dc2626; padding: 20px;">Failed to load phones.</td></tr>`;
+  }
+}
+
+function updatePhoneBulkUI() {
+  const checkboxes = document.querySelectorAll('.phone-select-chk');
+  const checked = document.querySelectorAll('.phone-select-chk:checked');
+  const bulkBar = document.getElementById('phoneBulkActionBar');
+  const countSpan = document.getElementById('phoneBulkCount');
+  const selectAll = document.getElementById('selectAllPhones');
+
+  if (selectAll && checkboxes.length > 0) {
+    selectAll.checked = checked.length === checkboxes.length;
+    selectAll.indeterminate = checked.length > 0 && checked.length < checkboxes.length;
+  }
+
+  if (bulkBar && countSpan) {
+    if (checked.length > 0) {
+      bulkBar.style.display = 'inline-flex';
+      countSpan.innerText = `${checked.length} phone${checked.length === 1 ? '' : 's'} selected`;
+    } else {
+      bulkBar.style.display = 'none';
+    }
+  }
+}
+
+async function handleBulkDeletePhones() {
+  const checked = Array.from(document.querySelectorAll('.phone-select-chk:checked')).map(cb => cb.value);
+  if (checked.length === 0) {
+    alert('Please select at least one phone to delete.');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to permanently delete ${checked.length} selected phone(s)?\n\nThis will remove the phones, specifications, and prices from the MySQL database.`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/phones/bulk-delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: checked })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showAdminToast(`Successfully deleted ${checked.length} phone(s)!`);
+      loadAdminPhones();
+    } else {
+      alert(json.message || 'Error deleting selected phones');
+    }
+  } catch (err) {
+    console.error('Bulk delete error:', err);
+    alert('Failed to delete selected phones. Check network connection.');
   }
 }
 

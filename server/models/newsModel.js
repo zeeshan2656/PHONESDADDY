@@ -192,6 +192,15 @@ class NewsModel {
   }
 
   /**
+   * Delete multiple articles in bulk
+   */
+  static async deleteArticles(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const [result] = await pool.query('DELETE FROM news WHERE id IN (?)', [ids]);
+    return result.affectedRows;
+  }
+
+  /**
    * Get stats for admin dashboard
    */
   static async getStats() {

@@ -41,6 +41,7 @@ router.post('/admin/upload-inline-image', requireArticlePermission, handleUpload
 router.post('/admin', requireArticlePermission, handleUpload('image'), NewsController.create);
 router.get('/admin/:id', requireArticlePermission, NewsController.adminGetById);
 router.put('/admin/:id', requireArticlePermission, handleUpload('image'), NewsController.update);
+router.post('/admin/bulk-delete', requireArticlePermission, NewsController.bulkDelete);
 router.delete('/admin/:id', requireArticlePermission, NewsController.delete);
 
 module.exports = router;

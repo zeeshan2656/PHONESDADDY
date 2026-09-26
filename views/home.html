@@ -779,7 +779,7 @@
 
     function renderHomeCard(phone) {
       return `
-        <div class="phone-card" onclick="window.location.href='/phone/${phone.slug}'">
+        <div class="phone-card home-phone-card" onclick="window.location.href='/phone/${phone.slug}'">
           <div class="phone-card-image-wrap">
             <span class="phone-card-brand-badge">${escapeHtml(phone.brand_name || '')}</span>
             <a href="/phone/${phone.slug}" onclick="event.stopPropagation()">
@@ -787,7 +787,7 @@
             </a>
           </div>
           <div class="phone-card-body">
-            <a href="/phone/${phone.slug}" onclick="event.stopPropagation()">
+            <a href="/phone/${phone.slug}" onclick="event.stopPropagation()" style="display: flex; align-items: center; justify-content: center; width: 100%; text-decoration: none;">
               <h3 class="phone-card-title" title="${escapeHtml(phone.name)}">${escapeHtml(phone.name)}</h3>
             </a>
           </div>

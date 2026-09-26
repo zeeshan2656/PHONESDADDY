@@ -315,6 +315,29 @@ class PhoneController {
     }
   }
 
+  static async bulkDeletePhones(req, res, next) {
+    try {
+      const { ids } = req.body;
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: 'No phone IDs provided for deletion.' });
+      }
+
+      const cleanIds = ids.map(id => parseInt(id, 10)).filter(id => !isNaN(id) && id > 0);
+      if (cleanIds.length === 0) {
+        return res.status(400).json({ success: false, message: 'No valid phone IDs provided.' });
+      }
+
+      const affected = await PhoneModel.deletePhones(cleanIds);
+      return res.json({
+        success: true,
+        message: `Successfully deleted ${affected} phone(s).`,
+        affected
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async fetchExternalSpecs(req, res, next) {
     try {
       const { url } = req.body;

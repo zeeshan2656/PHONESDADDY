@@ -56,95 +56,126 @@
   <main class="container" style="padding-top: 32px; padding-bottom: 60px;">
     <div class="catalog-layout">
 
+      <!-- Mobile Filter Toggle Bar (Visible only on mobile) -->
+      <div class="mobile-filter-bar">
+        <button type="button" class="mobile-filter-bar-btn" id="btnToggleMobileFilter" onclick="toggleMobileFilterSidebar()">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Filter Smartphones</span>
+          </span>
+          <span class="mobile-filter-toggle-state" id="mobileFilterStateText">Tap to Open ▾</span>
+        </button>
+      </div>
+
       <!-- Filter Sidebar -->
-      <aside class="filter-sidebar">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+      <aside class="filter-sidebar" id="filterSidebar">
+        <div class="filter-sidebar-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
           <h3 style="font-size: 16px; font-weight: 700; color: var(--dark);">Filters</h3>
           <button id="btnResetFilters" style="background: none; border: none; color: var(--primary); font-size: 13px; font-weight: 600; cursor: pointer;">Reset All</button>
         </div>
 
         <!-- 5G Toggle -->
-        <div class="filter-group">
+        <div class="filter-group filter-group-static">
           <label class="filter-label" style="font-weight: 700;">
             <input type="checkbox" id="filter5G">
             <span>5G Connectivity Only</span>
           </label>
         </div>
 
-        <!-- Brand Filter -->
-        <div class="filter-group">
-          <div class="filter-title">Brands</div>
-          <div class="filter-options-list" id="brandFiltersList">
-            <div style="color: #94a3b8; font-size: 13px;">Loading brands...</div>
+        <!-- Brand Filter Accordion -->
+        <div class="filter-group filter-accordion-group" id="filterGroupBrand">
+          <div class="filter-title" onclick="toggleFilterAccordion('filterGroupBrand')">
+            <span>Brands</span>
+            <span class="filter-chevron">▾</span>
+          </div>
+          <div class="filter-group-content">
+            <div class="filter-options-list" id="brandFiltersList">
+              <div style="color: #94a3b8; font-size: 13px;">Loading brands...</div>
+            </div>
           </div>
         </div>
 
-        <!-- Price Range -->
-        <div class="filter-group">
-          <div class="filter-title">Price Range (PKR)</div>
-          <div class="filter-price-inputs">
-            <input type="number" id="filterMinPrice" placeholder="Min" min="0" step="5000">
-            <span style="color: #94a3b8;">-</span>
-            <input type="number" id="filterMaxPrice" placeholder="Max" min="0" step="5000">
+        <!-- Price Range Accordion -->
+        <div class="filter-group filter-accordion-group" id="filterGroupPrice">
+          <div class="filter-title" onclick="toggleFilterAccordion('filterGroupPrice')">
+            <span>Price Range (PKR)</span>
+            <span class="filter-chevron">▾</span>
           </div>
-          <button id="btnApplyPrice" class="btn btn-outline btn-sm btn-block" style="margin-top: 10px;">Apply Price</button>
-        </div>
-
-        <!-- RAM Filter -->
-        <div class="filter-group">
-          <div class="filter-title">RAM</div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="" checked>
-              <span>Any RAM</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="16GB">
-              <span>16 GB &amp; above</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="12GB">
-              <span>12 GB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="8GB">
-              <span>8 GB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="6GB">
-              <span>6 GB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterRam" value="4GB">
-              <span>4 GB</span>
-            </label>
+          <div class="filter-group-content">
+            <div class="filter-price-inputs">
+              <input type="number" id="filterMinPrice" placeholder="Min" min="0" step="5000">
+              <span style="color: #94a3b8;">-</span>
+              <input type="number" id="filterMaxPrice" placeholder="Max" min="0" step="5000">
+            </div>
+            <button id="btnApplyPrice" class="btn btn-outline btn-sm btn-block" style="margin-top: 10px;">Apply Price</button>
           </div>
         </div>
 
-        <!-- Storage Filter -->
-        <div class="filter-group">
-          <div class="filter-title">Internal Storage</div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <label class="filter-label">
-              <input type="radio" name="filterStorage" value="" checked>
-              <span>Any Storage</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterStorage" value="1TB">
-              <span>1 TB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterStorage" value="512GB">
-              <span>512 GB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterStorage" value="256GB">
-              <span>256 GB</span>
-            </label>
-            <label class="filter-label">
-              <input type="radio" name="filterStorage" value="128GB">
-              <span>128 GB</span>
-            </label>
+        <!-- RAM Filter Accordion -->
+        <div class="filter-group filter-accordion-group" id="filterGroupRam">
+          <div class="filter-title" onclick="toggleFilterAccordion('filterGroupRam')">
+            <span>RAM</span>
+            <span class="filter-chevron">▾</span>
+          </div>
+          <div class="filter-group-content">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="" checked>
+                <span>Any RAM</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="16GB">
+                <span>16 GB &amp; above</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="12GB">
+                <span>12 GB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="8GB">
+                <span>8 GB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="6GB">
+                <span>6 GB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterRam" value="4GB">
+                <span>4 GB</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage Filter Accordion -->
+        <div class="filter-group filter-accordion-group" id="filterGroupStorage">
+          <div class="filter-title" onclick="toggleFilterAccordion('filterGroupStorage')">
+            <span>Internal Storage</span>
+            <span class="filter-chevron">▾</span>
+          </div>
+          <div class="filter-group-content">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label class="filter-label">
+                <input type="radio" name="filterStorage" value="" checked>
+                <span>Any Storage</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterStorage" value="1TB">
+                <span>1 TB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterStorage" value="512GB">
+                <span>512 GB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterStorage" value="256GB">
+                <span>256 GB</span>
+              </label>
+              <label class="filter-label">
+                <input type="radio" name="filterStorage" value="128GB">
+                <span>128 GB</span>
+              </label>
+            </div>
           </div>
         </div>
 

@@ -127,18 +127,28 @@
 
       <!-- Articles Table Card -->
       <div class="admin-card">
-        <div class="admin-card-header">
+        <div class="admin-card-header" style="flex-wrap: wrap; gap: 12px;">
           <div>
             <h3 class="admin-card-title">All News &amp; Blog Posts</h3>
             <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Manage published stories, drafts, formatting, and headlines</p>
           </div>
-          <a href="/admin/news/new" class="btn btn-primary btn-sm">+ Write Blog Post</a>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <!-- Bulk Action Bar -->
+            <div id="newsBulkActionBar" style="display: none; align-items: center; gap: 10px; background: #fef2f2; border: 1px solid #fecaca; padding: 4px 12px; border-radius: 6px;">
+              <span id="newsBulkCount" style="font-weight: 700; color: #dc2626; font-size: 12.5px;">0 selected</span>
+              <button type="button" class="btn btn-sm" id="btnDeleteSelectedNews" onclick="handleBulkDeleteNews()" style="background: #dc2626; color: #fff; font-weight: 600; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer;">
+                🗑️ Delete Selected
+              </button>
+            </div>
+            <a href="/admin/news/new" class="btn btn-primary btn-sm">+ Write Blog Post</a>
+          </div>
         </div>
 
         <div style="overflow-x: auto;">
           <table class="admin-table">
             <thead>
               <tr>
+                <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllNews" title="Select All Articles" style="cursor: pointer; width: 16px; height: 16px; accent-color: #0d9488;"></th>
                 <th style="width: 60px;">Image</th>
                 <th>Article Title</th>
                 <th style="width: 130px;">Category</th>
@@ -151,7 +161,7 @@
               </tr>
             </thead>
             <tbody id="newsTableBody">
-              <tr><td colspan="9" style="text-align: center; color: #64748b; padding: 32px;">Loading articles...</td></tr>
+              <tr><td colspan="10" style="text-align: center; color: #64748b; padding: 32px;">Loading articles...</td></tr>
             </tbody>
           </table>
         </div>
@@ -215,7 +225,16 @@
       const category = document.getElementById('adminNewsCategoryFilter').value;
       const status = document.getElementById('adminNewsStatusFilter').value;
 
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 32px;">Loading articles...</td></tr>`;
+      // Reset select-all and bulk action bar
+      const selectAll = document.getElementById('selectAllNews');
+      if (selectAll) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      }
+      const bulkBar = document.getElementById('newsBulkActionBar');
+      if (bulkBar) bulkBar.style.display = 'none';
+
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #64748b; padding: 32px;">Loading articles...</td></tr>`;
 
       try {
         const params = new URLSearchParams({
@@ -232,7 +251,7 @@
         if (!json.success || !json.data || json.data.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="8" style="text-align: center; color: #64748b; padding: 48px;">
+              <td colspan="10" style="text-align: center; color: #64748b; padding: 48px;">
                 <div style="font-size: 28px; margin-bottom: 8px; color: #0d9488;"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg></div>
                 <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">No articles found</div>
                 <div style="font-size: 13px; margin-bottom: 16px;">Try adjusting filters or write your first post.</div>
@@ -257,6 +276,9 @@
 
           return `
             <tr>
+              <td style="text-align: center;">
+                <input type="checkbox" class="news-select-chk" value="${a.id}" onchange="updateNewsBulkUI()" style="cursor: pointer; width: 16px; height: 16px; accent-color: #0d9488;">
+              </td>
               <td>
                 <img src="${thumb}" alt="${escapeQuote(a.title)}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;">
               </td>
@@ -296,7 +318,7 @@
         renderNewsPagination(json.pagination);
       } catch (err) {
         console.error('Error loading news list:', err);
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #dc2626; padding: 32px;">Error loading articles. Please try again.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #dc2626; padding: 32px;">Error loading articles. Please try again.</td></tr>`;
       }
     }
 
@@ -360,10 +382,72 @@
       }
     }
 
+    function updateNewsBulkUI() {
+      const checkboxes = document.querySelectorAll('.news-select-chk');
+      const checked = document.querySelectorAll('.news-select-chk:checked');
+      const bulkBar = document.getElementById('newsBulkActionBar');
+      const countSpan = document.getElementById('newsBulkCount');
+      const selectAll = document.getElementById('selectAllNews');
+
+      if (selectAll && checkboxes.length > 0) {
+        selectAll.checked = checked.length === checkboxes.length;
+        selectAll.indeterminate = checked.length > 0 && checked.length < checkboxes.length;
+      }
+
+      if (bulkBar && countSpan) {
+        if (checked.length > 0) {
+          bulkBar.style.display = 'inline-flex';
+          countSpan.innerText = `${checked.length} article${checked.length === 1 ? '' : 's'} selected`;
+        } else {
+          bulkBar.style.display = 'none';
+        }
+      }
+    }
+
+    async function handleBulkDeleteNews() {
+      const checked = Array.from(document.querySelectorAll('.news-select-chk:checked')).map(cb => cb.value);
+      if (checked.length === 0) {
+        alert('Please select at least one article to delete.');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to permanently delete ${checked.length} selected article(s)?\n\nThis action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/news/admin/bulk-delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: checked })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showAdminToast(`Successfully deleted ${checked.length} article(s)!`);
+          loadNewsList();
+          loadNewsStats();
+        } else {
+          alert(json.message || 'Error deleting selected articles');
+        }
+      } catch (err) {
+        console.error('Bulk delete news error:', err);
+        alert('Failed to delete selected articles. Check network connection.');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       populateAdminNewsCategories();
       loadNewsStats();
       loadNewsList();
+
+      const selectAll = document.getElementById('selectAllNews');
+      if (selectAll) {
+        selectAll.addEventListener('change', () => {
+          const checkboxes = document.querySelectorAll('.news-select-chk');
+          checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
+          updateNewsBulkUI();
+        });
+      }
 
       document.getElementById('adminNewsSearch').addEventListener('input', debounce(() => {
         currentNewsPage = 1;

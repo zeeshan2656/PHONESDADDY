@@ -116,7 +116,13 @@
             <h3 class="admin-card-title"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Recently Added Smartphones</h3>
             <p style="font-size: 13px; color: var(--admin-text-muted); margin-top: 2px;">Latest devices synchronized in MySQL</p>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div id="recentPhonesBulkActionBar" style="display: none; align-items: center; gap: 8px; background: #fef2f2; border: 1px solid #fecaca; padding: 3px 10px; border-radius: 6px;">
+              <span id="recentPhonesBulkCount" style="font-weight: 700; color: #dc2626; font-size: 12px;">0 selected</span>
+              <button type="button" class="btn btn-sm" id="btnDeleteSelectedRecentPhones" onclick="handleBulkDeleteRecentPhones()" style="background: #dc2626; color: #fff; font-weight: 600; border: none; padding: 3px 8px; font-size: 11.5px; border-radius: 4px; cursor: pointer;">
+                🗑️ Delete Selected
+              </button>
+            </div>
             <a href="/admin/phones/new" class="btn btn-primary btn-sm">+ Add Phone</a>
             <a href="/admin/phones" class="btn btn-outline btn-sm">View All Phones</a>
           </div>
@@ -126,6 +132,7 @@
           <table class="admin-table">
             <thead>
               <tr>
+                <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllRecentPhones" title="Select All Recent Phones" style="cursor: pointer; width: 16px; height: 16px; accent-color: #0d9488;"></th>
                 <th style="width: 50px;">Photo</th>
                 <th>Model Name</th>
                 <th>Brand</th>
@@ -135,7 +142,7 @@
               </tr>
             </thead>
             <tbody id="recentPhonesTableBody">
-              <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">Loading recent phones...</td></tr>
+              <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 24px;">Loading recent phones...</td></tr>
             </tbody>
           </table>
         </div>

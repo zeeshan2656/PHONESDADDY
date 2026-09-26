@@ -244,6 +244,32 @@ class NewsController {
   }
 
   /**
+   * Admin: Bulk Delete articles
+   */
+  static async bulkDelete(req, res, next) {
+    try {
+      const { ids } = req.body;
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: 'No article IDs provided for deletion.' });
+      }
+
+      const cleanIds = ids.map(id => parseInt(id, 10)).filter(id => !isNaN(id) && id > 0);
+      if (cleanIds.length === 0) {
+        return res.status(400).json({ success: false, message: 'No valid article IDs provided.' });
+      }
+
+      const affected = await NewsModel.deleteArticles(cleanIds);
+      return res.json({
+        success: true,
+        message: `Successfully deleted ${affected} article(s).`,
+        affected
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
    * Admin: Upload inline image for rich text editor
    */
   static async uploadInlineImage(req, res, next) {
