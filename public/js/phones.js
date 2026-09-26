@@ -231,10 +231,10 @@ function createPhoneCardHtml(phone) {
         <div class="phone-card-price">${phone.price > 0 ? formatPKR(phone.price) : 'Rumored Price'}</div>
         <div class="phone-card-stats-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 8px; font-size: 11.5px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 6px;">
           <span style="display: inline-flex; align-items: center; gap: 4px;" title="${(phone.views || 0).toLocaleString()} views">
-            ${ICONS.eye} <span>${(phone.views || 0).toLocaleString()}</span>
+            ${ICONS.eye} <span class="stat-label">${(phone.views || 0).toLocaleString()}</span>
           </span>
           <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: ${phone.review_count > 0 ? '#0d9488' : '#94a3b8'};" title="${(phone.review_count || 0).toLocaleString()} reviews">
-            ${ICONS.comment} <span>${(phone.review_count || 0).toLocaleString()}</span>
+            ${ICONS.comment} <span class="stat-label">${(phone.review_count || 0).toLocaleString()}</span>
           </span>
         </div>
       </div>

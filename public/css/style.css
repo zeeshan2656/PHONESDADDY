@@ -4051,3 +4051,13 @@ button, input, select, textarea {
   }
 }
 
+/* ── Phone Card Stats: Icons Only on Mobile ── */
+@media (max-width: 768px) {
+  .phone-card-stats-row .stat-label {
+    display: none;
+  }
+  .phone-card-stats-row > span {
+    gap: 0 !important;
+    font-size: 14px;
+  }
+}
